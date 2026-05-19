@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/ic_empty_circle.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Círculo de fondo azul claro -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#E8F7FA" />
+            <stroke
+                android:width="2dp"
+                android:color="#A1D6E2" />
+            <size
+                android:width="48dp"
+                android:height="48dp" />
+        </shape>
+    </item>
+
+    <!-- Punto central teal -->
+    <item
+        android:top="14dp"
+        android:bottom="14dp"
+        android:left="14dp"
+        android:right="14dp">
+        <shape android:shape="oval">
+            <solid android:color="#1995AD" />
+        </shape>
+    </item>
+
+</layer-list>

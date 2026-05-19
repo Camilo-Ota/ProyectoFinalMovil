@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="6dp"
+    android:paddingStart="4dp">
+
+    <TextView
+        android:id="@+id/tvAvatarRespuesta"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/avatar_background"
+        android:text="MR"
+        android:textSize="9sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@drawable/reply_bubble_background"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/tvAutorRespuesta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Miguel R."
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/tvContenidoRespuesta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirmado, ya pasé por ahí."
+            android:textSize="12sp"
+            android:textColor="@color/colorTextoTitulo"
+            android:lineSpacingMultiplier="1.4" />
+
+        <TextView
+            android:id="@+id/tvTiempoRespuesta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hace 3 min"
+            android:textSize="10sp"
+            android:textColor="@color/colorGris"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+</LinearLayout>

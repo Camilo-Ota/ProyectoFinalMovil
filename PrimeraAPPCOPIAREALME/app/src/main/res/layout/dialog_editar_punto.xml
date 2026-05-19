@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <View
+            android:layout_width="32dp"
+            android:layout_height="4dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Editar punto"
+            style="@style/HomeRutas.TituloScreen"
+            android:textSize="20sp"
+            android:layout_marginBottom="18dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre del punto"
+            style="@style/CrearRuta.FieldLabel" />
+
+        <EditText
+            android:id="@+id/etEditarNombrePunto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del punto"
+            android:inputType="textCapWords"
+            style="@style/CrearRuta.InputField"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Orden del punto"
+            style="@style/CrearRuta.FieldLabel" />
+
+        <EditText
+            android:id="@+id/etEditarOrdenPunto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Orden"
+            android:inputType="number"
+            style="@style/CrearRuta.InputField"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tipo de punto"
+            style="@style/CrearRuta.FieldLabel" />
+
+        <Spinner
+            android:id="@+id/spEditarTipoPunto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/input_background"
+            android:padding="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Latitud"
+            style="@style/CrearRuta.FieldLabel" />
+
+        <EditText
+            android:id="@+id/etEditarLatitudPunto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Latitud"
+            android:inputType="numberDecimal|numberSigned"
+            style="@style/CrearRuta.InputField"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Longitud"
+            style="@style/CrearRuta.FieldLabel" />
+
+        <EditText
+            android:id="@+id/etEditarLongitudPunto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Longitud"
+            android:inputType="numberDecimal|numberSigned"
+            style="@style/CrearRuta.InputField"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="8dp" />
+
+    </LinearLayout>
+</ScrollView>

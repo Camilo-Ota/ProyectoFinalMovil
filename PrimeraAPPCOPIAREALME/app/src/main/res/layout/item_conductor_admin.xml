@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/card_background"
+    android:padding="16dp"
+    android:layout_marginBottom="10dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvNombreConductorItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#1A2A35"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/tvEmailConductorItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="#BCBABE"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/tvPlacaConductorItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="#BCBABE"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/tvPhoneConductorItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="#BCBABE" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnEditarConductor"
+            android:layout_width="80dp"
+            android:layout_height="36dp"
+            android:text="Editar"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#1995AD"
+            android:layout_marginBottom="6dp" />
+
+        <Button
+            android:id="@+id/btnEliminarConductor"
+            android:layout_width="80dp"
+            android:layout_height="36dp"
+            android:text="Eliminar"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#D32F2F" />
+    </LinearLayout>
+</LinearLayout>

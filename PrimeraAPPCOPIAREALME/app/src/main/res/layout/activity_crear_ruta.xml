@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/colorBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="28dp">
+
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvTituloCrearRuta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Crear ruta"
+            style="@style/HomeRutas.TituloScreen"
+            android:layout_marginBottom="6dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Completa los datos para registrar una nueva ruta"
+            style="@style/HomeRutas.SubtituloScreen"
+            android:layout_marginBottom="28dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/card_background"
+            android:padding="18dp"
+            android:layout_marginBottom="16dp">
+
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_card_accent"
+                android:layout_marginEnd="14dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre de la ruta"
+                    style="@style/CrearRuta.FieldLabel" />
+
+                <EditText
+                    android:id="@+id/etNombreRuta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ej: Ruta norte"
+                    android:inputType="textCapWords"
+                    style="@style/CrearRuta.InputField"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Descripción"
+                    style="@style/CrearRuta.FieldLabel" />
+
+                <EditText
+                    android:id="@+id/etDescripcionRuta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ej: Desde bodega hasta punto final"
+                    android:inputType="textMultiLine"
+                    android:minLines="3"
+                    android:gravity="top"
+                    style="@style/CrearRuta.InputField"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Radio de detección (metros)"
+                    style="@style/CrearRuta.FieldLabel" />
+
+                <EditText
+                    android:id="@+id/etRadioDeteccion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ej: 30"
+                    android:inputType="numberDecimal"
+                    style="@style/CrearRuta.InputField"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="8dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnGuardarRuta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guardar ruta"
+            style="@style/HomeRutas.BotonPrimario"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/tvEstadoRuta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bin_redondo_verde"
+            android:text=""
+            android:textSize="14sp"
+            android:textColor="@color/colorBlanco"
+            android:padding="12dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+</ScrollView>

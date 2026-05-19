@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/card_background"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp">
+
+    <View
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_card_accent"
+        android:layout_marginEnd="14dp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvRutaHistorialItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ruta: Ruta Norte"
+            style="@style/HomeRutas.CardTitulo"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/badge_radio_background"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/tvEstadoHistorialItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Estado: finalizado"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvInicioHistorialItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Inicio: 01/01/2026 10:00:00"
+            style="@style/HomeRutas.CardDescripcion"
+            android:layout_marginBottom="3dp" />
+
+        <TextView
+            android:id="@+id/tvFinHistorialItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fin: 01/01/2026 10:30:00"
+            style="@style/HomeRutas.CardDescripcion"
+            android:layout_marginBottom="3dp" />
+
+        <TextView
+            android:id="@+id/tvTiempoTotalHistorialItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tiempo total: 00:30:00"
+            style="@style/HomeRutas.CardDescripcion"
+            android:layout_marginBottom="3dp" />
+
+        <TextView
+            android:id="@+id/tvCantidadPuntosHistorialItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Puntos registrados: 3"
+            style="@style/HomeRutas.CardDescripcion" />
+
+    </LinearLayout>
+</LinearLayout>

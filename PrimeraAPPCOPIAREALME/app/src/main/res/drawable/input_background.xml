@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/input_background.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Foco activo: borde teal más grueso -->
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <stroke
+                android:width="2dp"
+                android:color="#1995AD" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+
+    <!-- Estado normal: borde azul claro -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <stroke
+                android:width="1.5dp"
+                android:color="#A1D6E2" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+
+</selector>

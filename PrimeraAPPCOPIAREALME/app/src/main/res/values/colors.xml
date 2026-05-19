@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="negro">#FF000000</color>
+    <color name="blanco">#FFFFFFFF</color>
+    <color name="rojo">#FF0000</color>
+    <color name="azul">#0000FF</color>
+    <color name="verde">#008000</color>
+    <color name="gris">#808080</color>
+    <color name="beige">#F5F5DC</color>
+    <color name="gristenue">#D1D5DB</color>
+    <!-- Paleta de colores azul -->
+        <!-- Paleta principal -->
+    <color name="colorPrimary">#1995AD</color>
+    <color name="colorPrimaryLight">#A1D6E2</color>
+    <color name="colorBackground">#F1F1F2</color>
+    <color name="colorGris">#BCBABE</color>
+
+        <!-- Textos -->
+    <color name="colorTextoTitulo">#1A2A35</color>
+    <color name="colorTextoSubtitulo">#BCBABE</color>
+    <color name="colorTextoBoton">#FFFFFF</color>
+
+        <!-- Extras -->
+    <color name="colorBlanco">#FFFFFF</color>
+    <color name="colorTarjetaBorde">#A1D6E2</color>
+    <color name="colorSombra">#1995AD</color>
+
+</resources>

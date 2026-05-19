@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="12dp"
+        android:background="@color/colorBackground">
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tvTituloConfigurarPuntos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Configurar puntos"
+            style="@style/HomeRutas.TituloScreen"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvNombreRutaConfigurar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ruta:"
+            style="@style/HomeRutas.CardTitulo"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvInstruccionMapa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Toque el mapa para agregar un punto a esta ruta"
+            style="@style/HomeRutas.SubtituloScreen"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/btnRecargarPuntos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Recargar puntos"
+            style="@style/HomeRutas.BotonPrimario" />
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/mapConfigurarPuntos"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        map:uiZoomControls="true"
+        map:uiCompass="true" />
+
+    <TextView
+        android:id="@+id/tvTituloListaPuntos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Puntos de la ruta"
+        style="@style/HomeRutas.CardTitulo"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="6dp" />
+
+    <TextView
+        android:id="@+id/tvSinPuntos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aún no hay puntos registrados en esta ruta"
+        style="@style/HomeRutas.SubtituloScreen"
+        android:gravity="center"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerPuntosRuta"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false" />
+
+</LinearLayout>

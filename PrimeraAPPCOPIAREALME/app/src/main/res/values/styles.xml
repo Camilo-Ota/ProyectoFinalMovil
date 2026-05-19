@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values/styles.xml  (agregar dentro de <resources>) -->
+<resources>
+
+    <!-- PADRE obligatorio — Android lo necesita para resolver HomeRutas.X -->
+    <style name="HomeRutas" />
+
+    <!-- ============================================================
+         Textos generales del Home de Rutas
+    ============================================================ -->
+
+    <style name="HomeRutas.TituloScreen">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorTextoTitulo</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="HomeRutas.SubtituloScreen">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/colorGris</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <!-- ============================================================
+         Tarjetas
+    ============================================================ -->
+
+    <style name="HomeRutas.CardNumero">
+        <!-- Número del paso: "01", "02", etc. -->
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:letterSpacing">0.1</item>
+    </style>
+
+    <style name="HomeRutas.CardTitulo">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorTextoTitulo</item>
+    </style>
+
+    <style name="HomeRutas.CardDescripcion">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/colorGris</item>
+        <item name="android:lineSpacingMultiplier">1.4</item>
+    </style>
+
+    <!-- ============================================================
+         Botón primario
+    ============================================================ -->
+
+    <style name="HomeRutas.BotonPrimario">
+        <item name="android:background">@drawable/btn_primary</item>
+        <item name="android:textColor">@color/colorBlanco</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:elevation">2dp</item>
+    </style>
+
+
+    <!-- ============================================================
+         Crear Ruta — Labels e Inputs
+    ============================================================ -->
+
+    <!-- PADRE obligatorio -->
+    <style name="CrearRuta" />
+
+    <!-- Etiqueta de campo (bold, azul oscuro) -->
+    <style name="CrearRuta.FieldLabel">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorTextoTitulo</item>
+    </style>
+
+    <!-- Input con fondo blanco, borde azul claro y esquinas redondeadas -->
+    <style name="CrearRuta.InputField">
+        <item name="android:background">@drawable/input_background</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorTextoTitulo</item>
+        <item name="android:textColorHint">@color/colorGris</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+</resources>

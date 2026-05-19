@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvTituloDatosUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Datos de usuario"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tvDescripcionDatosUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Esta pantalla queda preparada para el siguiente paso, donde se registrarán o consultarán los datos del usuario que realizará el recorrido."
+            android:textSize="16sp"
+            android:layout_marginBottom="20dp" />
+
+        <TextView
+            android:id="@+id/tvEstadoDatosUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Módulo pendiente de implementación."
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>

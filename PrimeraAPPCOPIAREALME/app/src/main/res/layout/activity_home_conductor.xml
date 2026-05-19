@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#F1F1F2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="28dp">
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:background="#1995AD"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Panel del Conductor"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="#1A2A35"
+            android:layout_marginBottom="6dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Selecciona la operación que deseas realizar"
+            android:textSize="15sp"
+            android:textColor="#BCBABE"
+            android:layout_marginBottom="28dp" />
+
+        <!-- Tarjeta: Iniciar recorrido -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="18dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OPCIÓN 01"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#1995AD"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Iniciar recorrido"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A2A35"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Elige una ruta y comienza el seguimiento GPS en tiempo real."
+                android:textSize="13sp"
+                android:textColor="#BCBABE"
+                android:layout_marginBottom="14dp" />
+
+            <Button
+                android:id="@+id/btnIrIniciarRecorrido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ir a iniciar recorrido"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#1995AD"
+                android:padding="12dp" />
+        </LinearLayout>
+
+        <!-- Tarjeta: Historial -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="18dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OPCIÓN 02"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#1995AD"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Historial de recorridos"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A2A35"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Consulta los recorridos que has realizado."
+                android:textSize="13sp"
+                android:textColor="#BCBABE"
+                android:layout_marginBottom="14dp" />
+
+            <Button
+                android:id="@+id/btnIrHistorialRecorridos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ver historial"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#1995AD"
+                android:padding="12dp" />
+        </LinearLayout>
+
+        <!-- Tarjeta: Mis datos -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="18dp"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OPCIÓN 03"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#1995AD"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mis datos"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A2A35"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Consulta y actualiza tu información personal."
+                android:textSize="13sp"
+                android:textColor="#BCBABE"
+                android:layout_marginBottom="14dp" />
+
+            <Button
+                android:id="@+id/btnIrDatosUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ver mis datos"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#1995AD"
+                android:padding="12dp" />
+        </LinearLayout>
+
+        <!-- Tarjeta: Chat grupal -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="18dp"
+            android:layout_marginBottom="28dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="OPCIÓN 04"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#1995AD"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chat grupal"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A2A35"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Canal de comunicación entre conductores y administración."
+                android:textSize="13sp"
+                android:textColor="#BCBABE"
+                android:layout_marginBottom="14dp" />
+
+            <Button
+                android:id="@+id/btnIrBlogConductores"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ir al chat"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#1995AD"
+                android:padding="12dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnCerrarSesionConductor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cerrar sesión"
+            android:textAllCaps="false"
+            android:textColor="#1995AD"
+            android:textStyle="bold"
+            android:backgroundTint="#FFFFFF"
+            android:padding="14dp" />
+
+    </LinearLayout>
+</ScrollView>
