@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -38,15 +37,16 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
     private val db = FirebaseDatabase.getInstance().reference
     private val puntosList = mutableListOf<PuntoRuta>()
 
-    // Un mapa por conductor en lugar de un solo marcador
-    private val busesActivos = mutableMapOf<String, LatLng>()       // uid → posición
-    private val nombresConductores = mutableMapOf<String, String>()  // uid → nombre
-    private val busMarkers = mutableMapOf<String, Marker>()          // uid → marcador
+    private val busesActivos = mutableMapOf<String, LatLng>()
+    private val nombresConductores = mutableMapOf<String, String>()
+    private val busMarkers = mutableMapOf<String, Marker>()
 
     private var busListener: ValueEventListener? = null
     private lateinit var fusedLocation: FusedLocationProviderClient
     private var locationPasajero: Location? = null
     private var locationCallback: LocationCallback? = null
+    private var mapaListo = false
+    private var puntosListos = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +63,15 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
         cardInfoBus              = findViewById(R.id.cardInfoBus)
 
         tvNombreRutaMapa.text = rutaNombre
+
+        // ✅ FIX: Mostrar el panel desde el inicio con estado de carga,
+        // no esperar a que lleguen datos del bus para hacerlo visible.
+        cardInfoBus.visibility           = View.VISIBLE
+        tvEstadoBusMapa.text             = "⏳ Buscando buses..."
+        tvTiempoEstimadoMapa.text        = "Calculando..."
+        tvParaderoMasCercanoMapa.text    = "Obteniendo tu ubicación..."
+        tvInfoConductorMapa.text         = ""
+
         fusedLocation = LocationServices.getFusedLocationProviderClient(this)
 
         (supportFragmentManager.findFragmentById(R.id.mapFragmentPasajero) as SupportMapFragment)
@@ -78,11 +87,9 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun verificarUbicacionActivada() {
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val gpsActivo = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        val redActiva = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-
-        if (!gpsActivo && !redActiva) {
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
+            !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             AlertDialog.Builder(this)
                 .setTitle("Ubicación desactivada")
                 .setMessage("Para ver el bus en tiempo real y calcular el tiempo de llegada a tu paradero, necesitamos acceder a tu ubicación. ¿Deseas activarla ahora?")
@@ -92,11 +99,7 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
                 .setNegativeButton("Cancelar") { dialog, _ ->
                     dialog.dismiss()
-                    Toast.makeText(
-                        this,
-                        "Sin ubicación no podremos mostrarte el paradero ni el tiempo estimado.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this, "Sin ubicación no podremos mostrarte el paradero ni el tiempo estimado.", Toast.LENGTH_LONG).show()
                 }
                 .show()
         }
@@ -104,6 +107,7 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mapaListo = true
         mMap.uiSettings.isZoomControlsEnabled = true
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
@@ -112,6 +116,7 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
         cargarPuntosRuta()
         escucharBus()
     }
+
     private fun cargarPuntosRuta() {
         db.child("rutas").child(rutaId).child("puntos").orderByChild("orden")
             .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -124,7 +129,6 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                         puntosList.add(p)
                         val ll = LatLng(p.latitud, p.longitud)
                         pts.add(ll)
-                        // Marcadores de paraderos
                         mMap.addMarker(
                             MarkerOptions()
                                 .position(ll)
@@ -134,18 +138,17 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
 
                     if (pts.isNotEmpty()) {
-                        // ✅ Ruta del BUS en modo driving (calles reales)
                         DirectionsHelper.obtenerRutaReal(pts, mode = "driving") { puntosRuta ->
                             runOnUiThread {
-                                val puntosParaDibujar = if (puntosRuta.isNotEmpty()) puntosRuta else pts
+                                val paraDibujar = if (puntosRuta.isNotEmpty()) puntosRuta else pts
                                 mMap.addPolyline(
                                     PolylineOptions()
-                                        .addAll(puntosParaDibujar)
+                                        .addAll(paraDibujar)
                                         .color(android.graphics.Color.parseColor("#1995AD"))
                                         .width(8f)
                                 )
                                 try {
-                                    val b = LatLngBounds.builder().also { puntosParaDibujar.forEach(it::include) }.build()
+                                    val b = LatLngBounds.builder().also { paraDibujar.forEach(it::include) }.build()
                                     mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(b, 100))
                                 } catch (e: Exception) {
                                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pts.first(), 14f))
@@ -153,6 +156,9 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                             }
                         }
                     }
+
+                    puntosListos = true
+                    // FIX: Intentar actualizar el panel ahora que tenemos los puntos
                     actualizarPanelCompleto()
                 }
                 override fun onCancelled(e: DatabaseError) {
@@ -161,37 +167,31 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
             })
     }
 
-    // ✅ NUEVO: dibuja en el mapa cómo caminar desde el pasajero hasta su paradero más cercano
     private var polylineWalking: com.google.android.gms.maps.model.Polyline? = null
 
     private fun mostrarRutaWalkingAParadero(paradero: PuntoRuta) {
         val pasajero = locationPasajero ?: return
-
-        val origen = LatLng(pasajero.latitude, pasajero.longitude)
+        val origen  = LatLng(pasajero.latitude, pasajero.longitude)
         val destino = LatLng(paradero.latitud, paradero.longitud)
 
         DirectionsHelper.obtenerRutaReal(listOf(origen, destino), mode = "walking") { puntosRuta ->
             runOnUiThread {
-                // Borrar la ruta walking anterior si existe
                 polylineWalking?.remove()
-
                 if (puntosRuta.isNotEmpty()) {
                     polylineWalking = mMap.addPolyline(
                         PolylineOptions()
                             .addAll(puntosRuta)
-                            .color(android.graphics.Color.parseColor("#FF6B35")) // naranja = a pie
+                            .color(android.graphics.Color.parseColor("#FF6B35"))
                             .width(6f)
                             .pattern(listOf(
                                 com.google.android.gms.maps.model.Dot(),
                                 com.google.android.gms.maps.model.Gap(10f)
-                            )) // línea punteada para distinguirla del bus
+                            ))
                     )
                 }
             }
         }
     }
-
-
 
     private fun escucharBus() {
         busListener = object : ValueEventListener {
@@ -211,31 +211,25 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                         busesActivos[uid] = ll
                         nombresConductores[uid] = nombre
 
-                        // Actualizar o crear marcador para este conductor
                         if (busMarkers.containsKey(uid)) {
                             busMarkers[uid]?.position = ll
                         } else {
-
-                            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.buslogo)
+                            val bitmap      = BitmapFactory.decodeResource(resources, R.drawable.buslogo)
                             val smallMarker = Bitmap.createScaledBitmap(bitmap, 80, 80, false)
-
                             val marker = mMap.addMarker(
                                 MarkerOptions()
                                     .position(ll)
                                     .title("Bus: $nombre")
                                     .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
                             )
-
                             if (marker != null) busMarkers[uid] = marker
                         }
                     } else {
-                        // Este conductor finalizó — quitar su marcador
                         busMarkers[uid]?.remove()
                         busMarkers.remove(uid)
                     }
                 }
 
-                // Limpiar marcadores de conductores que desaparecieron del snapshot
                 val uidsActuales = snapshot.children.map { it.key }
                 busMarkers.keys.toList().forEach { uid ->
                     if (!uidsActuales.contains(uid)) {
@@ -244,8 +238,7 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
 
-                cardInfoBus.visibility = View.VISIBLE
-
+                // ✅ FIX: cardInfoBus ya es visible desde onCreate, solo actualizamos textos
                 if (busesActivos.isEmpty()) {
                     tvEstadoBusMapa.text          = "🔴 Bus no disponible"
                     tvTiempoEstimadoMapa.text     = "Sin información"
@@ -256,50 +249,50 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                     actualizarPanelCompleto()
                 }
             }
-            override fun onCancelled(e: DatabaseError) {}
+            override fun onCancelled(e: DatabaseError) {
+                tvEstadoBusMapa.text = "🔴 Error al obtener buses"
+            }
         }
-        //  Escuchar todos los conductores hijos del nodo de la ruta
         db.child("recorridos_activos").child(rutaId).addValueEventListener(busListener!!)
     }
 
     private fun actualizarPanelCompleto() {
-        val pasajero = locationPasajero ?: return
-        if (puntosList.isEmpty()) return
+        // FIX: Verificar ambas condiciones antes de calcular
+        val pasajero = locationPasajero ?: run {
+            tvParaderoMasCercanoMapa.text = "Esperando tu ubicación GPS..."
+            return
+        }
+        if (!puntosListos || puntosList.isEmpty()) {
+            tvParaderoMasCercanoMapa.text = "Cargando paraderos..."
+            return
+        }
 
-        // 1. Paradero más cercano al pasajero
         var paraderoMasCercano: PuntoRuta? = null
         var distanciaMinParadero = Float.MAX_VALUE
 
         puntosList.forEach { p ->
             val res = FloatArray(1)
-            Location.distanceBetween(
-                pasajero.latitude, pasajero.longitude,
-                p.latitud, p.longitud,
-                res
-            )
+            Location.distanceBetween(pasajero.latitude, pasajero.longitude, p.latitud, p.longitud, res)
             if (res[0] < distanciaMinParadero) {
                 distanciaMinParadero = res[0]
                 paraderoMasCercano = p
             }
         }
 
-        // Dentro de actualizarPanelCompleto(), reemplaza el bloque paraderoMasCercano?.let { ... }
         paraderoMasCercano?.let { paradero ->
             val distTexto = if (distanciaMinParadero < 1000)
                 "${distanciaMinParadero.toInt()} m"
             else
                 "${"%.1f".format(distanciaMinParadero / 1000)} km"
             tvParaderoMasCercanoMapa.text = "Tu paradero: ${paradero.nombre} ($distTexto)"
-
-            // ✅ Mostrar ruta a pie hasta el paradero
             mostrarRutaWalkingAParadero(paradero)
         }
 
-        // 2. De todos los buses activos, elegir el que llegará PRIMERO al paradero
         val paradero = paraderoMasCercano ?: return
 
         if (busesActivos.isEmpty()) {
             tvTiempoEstimadoMapa.text = "Bus no activo"
+            tvInfoConductorMapa.text  = ""
             return
         }
 
@@ -308,24 +301,21 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
 
         busesActivos.forEach { (uid, busPos) ->
             val distanciaMetros = calcularDistanciaRuta(busPos, paradero)
-            val velocidadMpMin = 20000f / 60f  // 20 km/h en m/min
-            val minutos = (distanciaMetros / velocidadMpMin).toInt()
-
+            val velocidadMpMin  = 20000f / 60f
+            val minutos         = (distanciaMetros / velocidadMpMin).toInt()
             if (minutos < menorTiempoMin) {
-                menorTiempoMin = minutos
-                nombreBusMasCercano = nombresConductores[uid] ?: "Conductor"
+                menorTiempoMin        = minutos
+                nombreBusMasCercano   = nombresConductores[uid] ?: "Conductor"
             }
         }
 
         tvInfoConductorMapa.text = "Conductor más cercano: $nombreBusMasCercano"
-
         tvTiempoEstimadoMapa.text = when {
-            menorTiempoMin <= 0  -> "Llegando ahora"
-            menorTiempoMin == 1  -> "~1 min"
-            menorTiempoMin < 60  -> "~$menorTiempoMin min"
+            menorTiempoMin <= 0 -> "Llegando ahora"
+            menorTiempoMin == 1 -> "~1 min"
+            menorTiempoMin < 60 -> "~$menorTiempoMin min"
             else -> {
-                val h = menorTiempoMin / 60
-                val m = menorTiempoMin % 60
+                val h = menorTiempoMin / 60; val m = menorTiempoMin % 60
                 "~${h}h ${m}min"
             }
         }
@@ -333,41 +323,23 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun calcularDistanciaRuta(busPos: LatLng, paraderoDestino: PuntoRuta): Float {
         if (puntosList.isEmpty()) return 0f
-
-        // Punto de la ruta más cercano al bus
-        var indiceBus = 0
-        var distMinBus = Float.MAX_VALUE
+        var indiceBus = 0; var distMinBus = Float.MAX_VALUE
         puntosList.forEachIndexed { i, p ->
             val r = FloatArray(1)
             Location.distanceBetween(busPos.latitude, busPos.longitude, p.latitud, p.longitud, r)
             if (r[0] < distMinBus) { distMinBus = r[0]; indiceBus = i }
         }
-
         val indiceDestino = puntosList.indexOfFirst { it.id == paraderoDestino.id }
         if (indiceDestino == -1) {
-            // Fallback: distancia recta bus → paradero
             val r = FloatArray(1)
-            Location.distanceBetween(
-                busPos.latitude, busPos.longitude,
-                paraderoDestino.latitud, paraderoDestino.longitud, r
-            )
+            Location.distanceBetween(busPos.latitude, busPos.longitude, paraderoDestino.latitud, paraderoDestino.longitud, r)
             return r[0]
         }
-
-        if (indiceDestino <= indiceBus) {
-            // El bus ya pasó ese paradero
-            return distMinBus
-        }
-
-        // Suma de segmentos desde el bus hasta el paradero destino
+        if (indiceDestino <= indiceBus) return distMinBus
         var totalMetros = distMinBus
         for (i in indiceBus until indiceDestino) {
             val r = FloatArray(1)
-            Location.distanceBetween(
-                puntosList[i].latitud, puntosList[i].longitud,
-                puntosList[i + 1].latitud, puntosList[i + 1].longitud,
-                r
-            )
+            Location.distanceBetween(puntosList[i].latitud, puntosList[i].longitud, puntosList[i+1].latitud, puntosList[i+1].longitud, r)
             totalMetros += r[0]
         }
         return totalMetros
@@ -376,11 +348,7 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun iniciarUbicacionPasajero() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                101
-            )
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 101)
             return
         }
         val req = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000L).build()
@@ -393,12 +361,9 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocation.requestLocationUpdates(req, locationCallback!!, Looper.getMainLooper())
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 101 && grantResults.isNotEmpty()
-            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == 101 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             iniciarUbicacionPasajero()
         }
     }

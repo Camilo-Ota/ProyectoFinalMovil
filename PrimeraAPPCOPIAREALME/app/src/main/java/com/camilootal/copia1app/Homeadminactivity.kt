@@ -55,7 +55,7 @@ class HomeAdminActivity : AppCompatActivity() {
 
         btnAgregarConductor.setOnClickListener { mostrarDialogoCrear() }
         btnIrCrearRuta.setOnClickListener {
-            startActivity(Intent(this, CrearRutaActivity::class.java))
+            startActivity(Intent(this, HomeAdminRutasActivity::class.java))
         }
         btnCerrarSesion.setOnClickListener {
             FirebaseAuth.getInstance().signOut()

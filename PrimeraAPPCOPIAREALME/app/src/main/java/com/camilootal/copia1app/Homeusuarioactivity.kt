@@ -7,16 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
-// Esta activity reemplaza HomePasajeroActivity con el nuevo nombre de rol "usuario"
 class HomeUsuarioActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_pasajero)  // reutiliza el layout existente
+        setContentView(R.layout.activity_home_pasajero)
 
         val tvBienvenida = findViewById<TextView>(R.id.tvBienvenidaPasajero)
         val btnVerRutas  = findViewById<Button>(R.id.btnVerRutasEnVivo)
-        val btnChat      = findViewById<Button>(R.id.btnChat)          // agrega este botón al layout
+        val btnChat      = findViewById<Button>(R.id.btnChat)
         val btnCerrar    = findViewById<Button>(R.id.btnCerrarSesionPasajero)
 
         val uid = FirebaseAuth.getInstance().currentUser?.uid
@@ -29,14 +28,15 @@ class HomeUsuarioActivity : AppCompatActivity() {
                 }
         }
 
-        // Solo puede ver rutas en vivo (lectura, no puede crear ni editar)
         btnVerRutas.setOnClickListener {
             startActivity(Intent(this, SeleccionarRutaPasajeroActivity::class.java))
         }
 
-        // Chat grupal (igual que el conductor)
+        //  : Pasar soloLectura=true para que el usuario no pueda publicar
         btnChat.setOnClickListener {
-            startActivity(Intent(this, CanalConductoresActivity::class.java))
+            val intent = Intent(this, CanalConductoresActivity::class.java)
+            intent.putExtra("soloLectura", true)
+            startActivity(intent)
         }
 
         btnCerrar.setOnClickListener {

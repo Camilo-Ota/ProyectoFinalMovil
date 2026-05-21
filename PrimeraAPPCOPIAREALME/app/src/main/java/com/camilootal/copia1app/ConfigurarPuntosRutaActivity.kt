@@ -287,7 +287,7 @@ class ConfigurarPuntosRutaActivity : AppCompatActivity(), OnMapReadyCallback {
             )
         }
 
-        // ✅ Dibujar ruta real con Directions API (driving = conductor)
+        //  Dibujar ruta real con Directions API (driving = conductor)
         val coordenadas = listaPuntos.map { LatLng(it.latitud, it.longitud) }
 
         DirectionsHelper.obtenerRutaReal(coordenadas, mode = "driving") { puntosRuta ->
