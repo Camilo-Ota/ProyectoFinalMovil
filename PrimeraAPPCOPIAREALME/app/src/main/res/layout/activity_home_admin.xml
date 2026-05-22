@@ -90,6 +90,19 @@
         android:layout_weight="1" />
 
     <Button
+        android:id="@+id/btnMisDatosAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mis datos"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:backgroundTint="#1995AD"
+        android:padding="12dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <Button
         android:id="@+id/btnCerrarSesionAdmin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

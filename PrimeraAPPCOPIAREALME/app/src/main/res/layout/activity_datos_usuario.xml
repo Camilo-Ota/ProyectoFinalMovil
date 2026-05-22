@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="#F1F1F2">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,30 +12,91 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <TextView
-            android:id="@+id/tvTituloDatosUsuario"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Datos de usuario"
-            android:textSize="26sp"
-            android:textStyle="bold"
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:background="#1995AD"
             android:layout_marginBottom="12dp" />
 
         <TextView
-            android:id="@+id/tvDescripcionDatosUsuario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Esta pantalla queda preparada para el siguiente paso, donde se registrarán o consultarán los datos del usuario que realizará el recorrido."
-            android:textSize="16sp"
-            android:layout_marginBottom="20dp" />
+            android:text="Mis datos"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#1A2A35"
+            android:layout_marginBottom="24dp" />
 
-        <TextView
-            android:id="@+id/tvEstadoDatosUsuario"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Módulo pendiente de implementación."
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombre:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A2A35"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/tvCorreo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Correo:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A2A35"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/tvTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Teléfono:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A2A35"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/tvRol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rol:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A2A35"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/tvPlaca"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Placa:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A2A35"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/tvLicencia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Licencia:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A2A35"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
