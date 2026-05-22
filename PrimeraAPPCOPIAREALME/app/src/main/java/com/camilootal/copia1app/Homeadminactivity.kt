@@ -19,7 +19,6 @@ class HomeAdminActivity : AppCompatActivity() {
     private lateinit var rvConductores: RecyclerView
     private lateinit var btnAgregarConductor: Button
     private lateinit var btnIrCrearRuta: Button
-    private lateinit var btnMisDatos: Button
     private lateinit var btnCerrarSesion: Button
     private lateinit var progressBar: ProgressBar
 
@@ -43,7 +42,6 @@ class HomeAdminActivity : AppCompatActivity() {
         rvConductores       = findViewById(R.id.rvConductores)
         btnAgregarConductor = findViewById(R.id.btnAgregarConductor)
         btnIrCrearRuta      = findViewById(R.id.btnIrCrearRuta)
-        btnMisDatos         = findViewById(R.id.btnMisDatosAdmin)
         btnCerrarSesion     = findViewById(R.id.btnCerrarSesionAdmin)
         progressBar         = findViewById(R.id.progressBarAdmin)
 
@@ -66,9 +64,6 @@ class HomeAdminActivity : AppCompatActivity() {
             startActivity(Intent(this, HomeAdminRutasActivity::class.java))
         }
 
-        btnMisDatos.setOnClickListener {
-            startActivity(Intent(this, DatosUsuarioActivity::class.java))
-        }
 
         btnCerrarSesion.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
