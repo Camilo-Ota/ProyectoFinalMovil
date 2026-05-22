@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase
 class HistorialRecorridosActivity : AppCompatActivity() {
 
     private lateinit var recyclerHistorialRecorridos: RecyclerView
-    private lateinit var layoutSinHistorial: LinearLayout   // ✅ Contenedor correcto del XML
+    private lateinit var layoutSinHistorial: LinearLayout
     private lateinit var progressBarHistorial: ProgressBar
 
     private val db = FirebaseDatabase.getInstance().reference

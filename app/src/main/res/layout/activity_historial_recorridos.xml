@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="Historial de recorridos"
         style="@style/HomeRutas.TituloScreen"
-        android:layout_marginBottom="6dp" />
+        android:layout_marginBottom="8dp" />
 
     <TextView
         android:id="@+id/tvSubtituloHistorial"

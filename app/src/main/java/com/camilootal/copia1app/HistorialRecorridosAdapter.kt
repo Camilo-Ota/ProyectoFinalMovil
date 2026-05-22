@@ -110,7 +110,4 @@ class HistorialRecorridosAdapter(
         val seg      = segundos % 60
         return String.format("%02d:%02d:%02d", horas, minutos, seg)
     }
-
-    //  Se eliminó la función falsa "private fun Context.startActivity(p0: Any) {}"
-    //    que estaba bloqueando la navegación real.
 }
