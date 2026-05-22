@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/activity_canal_conductores.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBackground">
+
+    <!-- ===== ENCABEZADO ===== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="12dp"
+        android:background="@color/colorBackground">
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tvTituloCanal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Canal de conductores"
+            style="@style/HomeRutas.TituloScreen"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvSubtituloCanal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Comparte novedades, trancons y alertas con tu equipo"
+            style="@style/HomeRutas.SubtituloScreen"
+            android:layout_marginBottom="4dp" />
+
+    </LinearLayout>
+
+    <!-- ===== CAJA NUEVA PUBLICACIÓN ===== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/card_background"
+        android:padding="14dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp">
+
+        <!-- Avatar + campo de texto -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="top">
+
+            <!-- Avatar del conductor actual -->
+            <TextView
+                android:id="@+id/tvAvatarPropio"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/avatar_background"
+                android:text="YO"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:gravity="center"
+                android:layout_marginEnd="10dp" />
+
+            <EditText
+                android:id="@+id/etNuevaPublicacion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="¿Qué quieres reportar?"
+                style="@style/CrearRuta.InputField"
+                android:minLines="2"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:maxLines="5" />
+        </LinearLayout>
+
+        <!-- Selector de categoría -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tagAlerta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Alerta"
+                    android:background="@drawable/tag_selected_background"
+                    android:textColor="@color/colorBlanco"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/tagTrancon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trancón"
+                    android:background="@drawable/tag_normal_background"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/tagInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Info"
+                    android:background="@drawable/tag_normal_background"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_marginEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/tagGeneral"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="General"
+                    android:background="@drawable/tag_normal_background"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <!-- Botón publicar -->
+        <Button
+            android:id="@+id/btnPublicar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Publicar"
+            style="@style/HomeRutas.BotonPrimario" />
+
+    </LinearLayout>
+
+    <!-- ===== FILTROS ===== -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/filtroTodos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Todos"
+                android:background="@drawable/tag_selected_background"
+                android:textColor="@color/colorBlanco"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/filtroAlertas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alertas"
+                android:background="@drawable/tag_normal_background"
+                android:textColor="@color/colorPrimary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/filtroTrancons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trancons"
+                android:background="@drawable/tag_normal_background"
+                android:textColor="@color/colorPrimary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/filtroInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Info"
+                android:background="@drawable/tag_normal_background"
+                android:textColor="@color/colorPrimary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- ===== LISTA DE PUBLICACIONES ===== -->
+    <ProgressBar
+        android:id="@+id/progressBarCanal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:id="@+id/layoutSinPublicaciones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/card_background"
+        android:padding="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/ic_empty_circle"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sin publicaciones aún"
+            android:textSize="15sp"
+            android:textColor="@color/colorGris"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sé el primero en reportar algo"
+            android:textSize="12sp"
+            android:textColor="@color/colorGris"
+            android:gravity="center"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerPublicaciones"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false" />
+
+</LinearLayout>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/activity_login.xml -->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/colorBackground"
+    tools:context=".LogIn">
+
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="48dp"
+        android:paddingBottom="32dp">
+
+        <!-- ===== LOGO + ENCABEZADO ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="36dp">
+
+            <ImageView
+                android:id="@+id/imagenuno"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/logocalculadora"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Barra de acento centrada -->
+            <View
+                android:layout_width="40dp"
+                android:layout_height="4dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bienvenido"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextoTitulo"
+                android:fontFamily="sans-serif-medium" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inicia sesión para continuar"
+                android:textSize="14sp"
+                android:textColor="@color/colorGris"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- ===== TARJETA FORMULARIO ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/card_background"
+            android:padding="18dp"
+            android:layout_marginBottom="20dp">
+
+            <!-- Barra de acento izquierda -->
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_card_accent"
+                android:layout_marginEnd="14dp" />
+
+            <!-- Campos -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!-- Email -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Correo electrónico"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorTextoTitulo"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/edt_Email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="ejemplo@correo.com"
+                    android:inputType="textEmailAddress"
+                    android:textSize="14sp"
+                    android:background="@drawable/input_background"
+                    android:textColor="@color/colorTextoTitulo"
+                    android:textColorHint="@color/colorGris"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Contraseña -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contraseña"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorTextoTitulo"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/edt_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="••••••••"
+                    android:inputType="textPassword"
+                    android:textSize="14sp"
+                    android:background="@drawable/input_background"
+                    android:textColor="@color/colorTextoTitulo"
+                    android:textColorHint="@color/colorGris"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ===== BOTONES ===== -->
+        <LinearLayout
+            android:id="@+id/linearbotones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ingresar"
+                android:textSize="15sp"
+                android:textColor="@color/colorBlanco"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:background="@drawable/btn_primary"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:layout_marginEnd="8dp"
+                android:elevation="2dp" />
+
+            <Button
+                android:id="@+id/btnSignUp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Registrar"
+                android:textSize="15sp"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:background="@drawable/btn_secondary"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:layout_marginStart="8dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/btnForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¿Olvidaste tu contraseña?"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+</ScrollView>

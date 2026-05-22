@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/btn_control_background.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Presionado -->
+    <item android:state_pressed="true">
+        <shape android:shape="oval">
+            <solid android:color="#127A8F" />
+        </shape>
+    </item>
+
+    <!-- Normal -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#1995AD" />
+            <stroke
+                android:width="2dp"
+                android:color="#A1D6E2" />
+        </shape>
+    </item>
+
+</selector>

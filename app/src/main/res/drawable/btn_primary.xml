@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/btn_primary.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Estado presionado: azul más oscuro -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#127A8F" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+
+    <!-- Estado normal: azul teal principal -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#1995AD" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+
+</selector>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/btn_secondary.xml -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#D0EEF4" />
+            <stroke android:width="2dp" android:color="#1995AD" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="#F1F1F2" />
+            <stroke android:width="1.5dp" android:color="#BCBABE" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <stroke android:width="1.5dp" android:color="#1995AD" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+
+</selector>

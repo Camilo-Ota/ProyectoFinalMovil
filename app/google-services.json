@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "140118789769",
+    "project_id": "appone-1-93d0e",
+    "storage_bucket": "appone-1-93d0e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140118789769:android:8d1cf54457882c7e954058",
+        "android_client_info": {
+          "package_name": "com.camilootal.copia1app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCR9tok2DGiW4kLUyuofT1b64w1yXVMQUg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
