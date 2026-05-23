@@ -28,8 +28,10 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var tvNombreRutaMapa: TextView
     private lateinit var tvEstadoBusMapa: TextView
     private lateinit var tvTiempoEstimadoMapa: TextView
+    private lateinit var tvTiempoWalkingMapa: TextView
     private lateinit var tvParaderoMasCercanoMapa: TextView
     private lateinit var tvInfoConductorMapa: TextView
+    private lateinit var tvHintParadero: TextView
     private lateinit var cardInfoBus: View
 
     private var rutaId = ""
@@ -40,6 +42,7 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
     private val busesActivos = mutableMapOf<String, LatLng>()
     private val nombresConductores = mutableMapOf<String, String>()
     private val busMarkers = mutableMapOf<String, Marker>()
+    private val paraderoMarkers = mutableMapOf<String, Marker>()
 
     private var busListener: ValueEventListener? = null
     private lateinit var fusedLocation: FusedLocationProviderClient
@@ -47,6 +50,10 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
     private var locationCallback: LocationCallback? = null
     private var mapaListo = false
     private var puntosListos = false
+
+    // Paradero actualmente seleccionado (null = el más cercano automático)
+    private var paraderoSeleccionado: PuntoRuta? = null
+    private var polylineWalking: Polyline? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,19 +65,19 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
         tvNombreRutaMapa         = findViewById(R.id.tvNombreRutaMapa)
         tvEstadoBusMapa          = findViewById(R.id.tvEstadoBusMapa)
         tvTiempoEstimadoMapa     = findViewById(R.id.tvTiempoEstimadoMapa)
+        tvTiempoWalkingMapa      = findViewById(R.id.tvTiempoWalkingMapa)
         tvParaderoMasCercanoMapa = findViewById(R.id.tvParaderoMasCercanoMapa)
         tvInfoConductorMapa      = findViewById(R.id.tvInfoConductorMapa)
+        tvHintParadero           = findViewById(R.id.tvHintParadero)
         cardInfoBus              = findViewById(R.id.cardInfoBus)
 
-        tvNombreRutaMapa.text = rutaNombre
-
-        // ✅ FIX: Mostrar el panel desde el inicio con estado de carga,
-        // no esperar a que lleguen datos del bus para hacerlo visible.
-        cardInfoBus.visibility           = View.VISIBLE
-        tvEstadoBusMapa.text             = "⏳ Buscando buses..."
-        tvTiempoEstimadoMapa.text        = "Calculando..."
-        tvParaderoMasCercanoMapa.text    = "Obteniendo tu ubicación..."
-        tvInfoConductorMapa.text         = ""
+        tvNombreRutaMapa.text         = rutaNombre
+        cardInfoBus.visibility        = View.VISIBLE
+        tvEstadoBusMapa.text          = "⏳ Buscando buses..."
+        tvTiempoEstimadoMapa.text     = "Calculando..."
+        tvTiempoWalkingMapa.text      = "Calculando..."
+        tvParaderoMasCercanoMapa.text = "Obteniendo tu ubicación..."
+        tvInfoConductorMapa.text      = ""
 
         fusedLocation = LocationServices.getFusedLocationProviderClient(this)
 
@@ -92,14 +99,14 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
             !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             AlertDialog.Builder(this)
                 .setTitle("Ubicación desactivada")
-                .setMessage("Para ver el bus en tiempo real y calcular el tiempo de llegada a tu paradero, necesitamos acceder a tu ubicación. ¿Deseas activarla ahora?")
+                .setMessage("Para ver el bus en tiempo real y calcular el tiempo de llegada necesitamos tu ubicación. ¿Deseas activarla?")
                 .setCancelable(false)
                 .setPositiveButton("Activar") { _, _ ->
                     startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
                 .setNegativeButton("Cancelar") { dialog, _ ->
                     dialog.dismiss()
-                    Toast.makeText(this, "Sin ubicación no podremos mostrarte el paradero ni el tiempo estimado.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Sin ubicación no podemos mostrarte el tiempo estimado.", Toast.LENGTH_LONG).show()
                 }
                 .show()
         }
@@ -109,10 +116,29 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         mapaListo = true
         mMap.uiSettings.isZoomControlsEnabled = true
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
             mMap.isMyLocationEnabled = true
         }
+
+        // Click en un marcador de paradero → seleccionar ese paradero
+        mMap.setOnMarkerClickListener { marker ->
+            val paradero = puntosList.find { it.nombre == marker.title }
+            if (paradero != null) {
+                seleccionarParadero(paradero, porUsuario = true)
+                marker.showInfoWindow()
+                true
+            } else {
+                false
+            }
+        }
+
+        // Click en el mapa (zona vacía) → volver al paradero automático
+        mMap.setOnMapClickListener {
+            seleccionarParadero(null, porUsuario = false)
+        }
+
         cargarPuntosRuta()
         escucharBus()
     }
@@ -122,19 +148,23 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     puntosList.clear()
+                    paraderoMarkers.clear()
                     val pts = mutableListOf<LatLng>()
+
                     for (child in snapshot.children) {
                         val p = child.getValue(PuntoRuta::class.java) ?: continue
                         p.id = child.key ?: ""
                         puntosList.add(p)
                         val ll = LatLng(p.latitud, p.longitud)
                         pts.add(ll)
-                        mMap.addMarker(
+
+                        val marker = mMap.addMarker(
                             MarkerOptions()
                                 .position(ll)
                                 .title(p.nombre)
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                         )
+                        if (marker != null) paraderoMarkers[p.id] = marker
                     }
 
                     if (pts.isNotEmpty()) {
@@ -158,7 +188,6 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
 
                     puntosListos = true
-                    // FIX: Intentar actualizar el panel ahora que tenemos los puntos
                     actualizarPanelCompleto()
                 }
                 override fun onCancelled(e: DatabaseError) {
@@ -167,7 +196,34 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
             })
     }
 
-    private var polylineWalking: com.google.android.gms.maps.model.Polyline? = null
+    /**
+     * Selecciona un paradero específico (toque del usuario) o lo limpia (volver al automático).
+     * porUsuario = true  → el usuario tocó un paradero → fija la selección
+     * porUsuario = false → toque en mapa vacío → vuelve al más cercano automático
+     */
+    private fun seleccionarParadero(paradero: PuntoRuta?, porUsuario: Boolean) {
+        paraderoSeleccionado = paradero
+
+        if (!porUsuario || paradero == null) {
+            // Restaurar hint y recalcular automáticamente
+            tvHintParadero.text = "💡 Toca un paradero en el mapa para ver su info"
+            actualizarPanelCompleto()
+            return
+        }
+
+        // Actualizar UI con el paradero seleccionado manualmente
+        tvHintParadero.text = "📌 ${paradero.nombre} seleccionado · Toca el mapa para volver al automático"
+
+        val pasajero = locationPasajero
+        if (pasajero == null) {
+            tvParaderoMasCercanoMapa.text = "📍 ${paradero.nombre}"
+            tvTiempoWalkingMapa.text      = "Esperando GPS..."
+        } else {
+            actualizarInfoParadero(paradero, pasajero)
+        }
+        mostrarRutaWalkingAParadero(paradero)
+        actualizarTiempoBus(paradero)
+    }
 
     private fun mostrarRutaWalkingAParadero(paradero: PuntoRuta) {
         val pasajero = locationPasajero ?: return
@@ -181,12 +237,13 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                     polylineWalking = mMap.addPolyline(
                         PolylineOptions()
                             .addAll(puntosRuta)
-                            .color(android.graphics.Color.parseColor("#FF6B35"))
-                            .width(6f)
+                            .color(android.graphics.Color.parseColor("#FF6B00"))
+                            .width(12f)                           // más grueso y visible
                             .pattern(listOf(
-                                com.google.android.gms.maps.model.Dot(),
-                                com.google.android.gms.maps.model.Gap(10f)
+                                Dot(),
+                                Gap(16f)                          // puntos más espaciados
                             ))
+                            .jointType(JointType.ROUND)
                     )
                 }
             }
@@ -238,12 +295,10 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
 
-                // ✅ FIX: cardInfoBus ya es visible desde onCreate, solo actualizamos textos
                 if (busesActivos.isEmpty()) {
                     tvEstadoBusMapa.text          = "🔴 Bus no disponible"
                     tvTiempoEstimadoMapa.text     = "Sin información"
                     tvInfoConductorMapa.text      = "No hay recorrido activo"
-                    tvParaderoMasCercanoMapa.text = "Paradero: —"
                 } else {
                     tvEstadoBusMapa.text = "🟢 ${busesActivos.size} bus(es) en servicio"
                     actualizarPanelCompleto()
@@ -257,7 +312,6 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun actualizarPanelCompleto() {
-        // FIX: Verificar ambas condiciones antes de calcular
         val pasajero = locationPasajero ?: run {
             tvParaderoMasCercanoMapa.text = "Esperando tu ubicación GPS..."
             return
@@ -267,29 +321,57 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
 
-        var paraderoMasCercano: PuntoRuta? = null
-        var distanciaMinParadero = Float.MAX_VALUE
+        // Si el usuario seleccionó un paradero manualmente, respetar esa selección
+        val paraderoObjetivo = paraderoSeleccionado ?: encontrarParaderoCercano(pasajero)
+        paraderoObjetivo ?: return
 
+        actualizarInfoParadero(paraderoObjetivo, pasajero)
+        mostrarRutaWalkingAParadero(paraderoObjetivo)
+        actualizarTiempoBus(paraderoObjetivo)
+    }
+
+    private fun encontrarParaderoCercano(pasajero: Location): PuntoRuta? {
+        var paraderoMasCercano: PuntoRuta? = null
+        var distanciaMin = Float.MAX_VALUE
         puntosList.forEach { p ->
             val res = FloatArray(1)
             Location.distanceBetween(pasajero.latitude, pasajero.longitude, p.latitud, p.longitud, res)
-            if (res[0] < distanciaMinParadero) {
-                distanciaMinParadero = res[0]
+            if (res[0] < distanciaMin) {
+                distanciaMin = res[0]
                 paraderoMasCercano = p
             }
         }
+        return paraderoMasCercano
+    }
 
-        paraderoMasCercano?.let { paradero ->
-            val distTexto = if (distanciaMinParadero < 1000)
-                "${distanciaMinParadero.toInt()} m"
-            else
-                "${"%.1f".format(distanciaMinParadero / 1000)} km"
-            tvParaderoMasCercanoMapa.text = "Tu paradero: ${paradero.nombre} ($distTexto)"
-            mostrarRutaWalkingAParadero(paradero)
+    /** Actualiza el nombre del paradero y el tiempo caminando */
+    private fun actualizarInfoParadero(paradero: PuntoRuta, pasajero: Location) {
+        val res = FloatArray(1)
+        Location.distanceBetween(pasajero.latitude, pasajero.longitude, paradero.latitud, paradero.longitud, res)
+        val distanciaM = res[0]
+
+        val distTexto = if (distanciaM < 1000)
+            "${distanciaM.toInt()} m"
+        else
+            "${"%.1f".format(distanciaM / 1000)} km"
+
+        tvParaderoMasCercanoMapa.text = "📍 ${paradero.nombre} ($distTexto)"
+
+        // Tiempo caminando: velocidad promedio peatonal ~83 m/min (5 km/h)
+        val minutosCaminando = (distanciaM / 83f).toInt()
+        tvTiempoWalkingMapa.text = when {
+            minutosCaminando <= 0 -> "Ya estás aquí"
+            minutosCaminando == 1 -> "~1 min caminando"
+            minutosCaminando < 60 -> "~$minutosCaminando min caminando"
+            else -> {
+                val h = minutosCaminando / 60; val m = minutosCaminando % 60
+                "~${h}h ${m}min caminando"
+            }
         }
+    }
 
-        val paradero = paraderoMasCercano ?: return
-
+    /** Actualiza el tiempo estimado de llegada del bus al paradero */
+    private fun actualizarTiempoBus(paradero: PuntoRuta) {
         if (busesActivos.isEmpty()) {
             tvTiempoEstimadoMapa.text = "Bus no activo"
             tvInfoConductorMapa.text  = ""
@@ -301,17 +383,17 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
 
         busesActivos.forEach { (uid, busPos) ->
             val distanciaMetros = calcularDistanciaRuta(busPos, paradero)
-            val velocidadMpMin  = 20000f / 60f
+            val velocidadMpMin  = 20000f / 60f  // 20 km/h en zonas urbanas
             val minutos         = (distanciaMetros / velocidadMpMin).toInt()
             if (minutos < menorTiempoMin) {
-                menorTiempoMin        = minutos
-                nombreBusMasCercano   = nombresConductores[uid] ?: "Conductor"
+                menorTiempoMin      = minutos
+                nombreBusMasCercano = nombresConductores[uid] ?: "Conductor"
             }
         }
 
-        tvInfoConductorMapa.text = "Conductor más cercano: $nombreBusMasCercano"
+        tvInfoConductorMapa.text = "Conductor: $nombreBusMasCercano"
         tvTiempoEstimadoMapa.text = when {
-            menorTiempoMin <= 0 -> "Llegando ahora"
+            menorTiempoMin <= 0 -> "Llegando ahora 🚌"
             menorTiempoMin == 1 -> "~1 min"
             menorTiempoMin < 60 -> "~$menorTiempoMin min"
             else -> {

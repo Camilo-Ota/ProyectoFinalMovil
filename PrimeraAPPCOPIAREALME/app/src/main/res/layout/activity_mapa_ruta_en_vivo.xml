@@ -62,6 +62,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
+            <!-- Estado del bus -->
             <TextView
                 android:id="@+id/tvEstadoBusMapa"
                 android:layout_width="match_parent"
@@ -69,8 +70,18 @@
                 android:text="🟢 Bus en servicio"
                 style="@style/HomeRutas.CardTitulo"
                 android:textSize="15sp"
+                android:layout_marginBottom="6dp" />
+
+            <!-- Paradero más cercano -->
+            <TextView
+                android:id="@+id/tvParaderoMasCercanoMapa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📍 Paradero: —"
+                style="@style/HomeRutas.CardDescripcion"
                 android:layout_marginBottom="4dp" />
 
+            <!-- Tiempo caminando al paradero -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -80,7 +91,32 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tiempo estimado: "
+                    android:text="🚶 Tú llegas en: "
+                    android:textSize="13sp"
+                    android:textColor="@color/colorTextoTitulo"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvTiempoWalkingMapa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Calculando..."
+                    android:textSize="13sp"
+                    android:textColor="#2E7D32"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Tiempo estimado del bus -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🚌 Bus llega en: "
                     android:textSize="13sp"
                     android:textColor="@color/colorTextoTitulo"
                     android:textStyle="bold" />
@@ -95,21 +131,26 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvParaderoMasCercanoMapa"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Paradero: —"
-                style="@style/HomeRutas.CardDescripcion"
-                android:layout_marginBottom="4dp" />
-
+            <!-- Conductor -->
             <TextView
                 android:id="@+id/tvInfoConductorMapa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Conductor: —"
                 style="@style/HomeRutas.CardDescripcion" />
+
+            <!-- Hint de paradero seleccionable -->
+            <TextView
+                android:id="@+id/tvHintParadero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="💡 Toca un paradero en el mapa para ver su info"
+                android:textSize="11sp"
+                android:textColor="#888888"
+                android:layout_marginTop="6dp" />
+
         </LinearLayout>
     </LinearLayout>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
