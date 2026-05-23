@@ -65,7 +65,6 @@ class LogIn : AppCompatActivity() {
             .addOnSuccessListener { snapshot ->
                 val rol = snapshot.getValue(String::class.java)
                 if (rol.isNullOrEmpty()) {
-                    // El nodo role no existe → cerrar sesión y mostrar error
                     auth.signOut()
                     Toast.makeText(this,
                         "Tu cuenta no tiene un rol asignado. Contacta al administrador.",
@@ -84,12 +83,10 @@ class LogIn : AppCompatActivity() {
         val destino = when (rol) {
             User.ROL_ADMINISTRADOR -> HomeAdminActivity::class.java
             User.ROL_CONDUCTOR     -> HomeRutasActivity::class.java
+            User.ROL_EMPRESA       -> HomeEmpresaActivity::class.java  // ← nuevo
             else                   -> HomeUsuarioActivity::class.java
         }
         startActivity(Intent(this, destino))
         finish()
     }
-
-    // Solo redirige automáticamente si hay sesión activa Y el rol es válido
-
 }

@@ -72,7 +72,9 @@ class SignUp : AppCompatActivity() {
                             Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
                         }
                 } else {
-                    Toast.makeText(this, "Ha ocurrido un error.", Toast.LENGTH_SHORT).show()
+                    val errorMsg = task.exception?.message ?: "Error desconocido"
+                    Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+                    android.util.Log.e("SignUp", "Error registro: $errorMsg")
                 }
             }
     }

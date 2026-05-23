@@ -26,17 +26,22 @@ class HomeAdminActivity : AppCompatActivity() {
     private lateinit var adapter: ConductorAdminAdapter
     private val mainHandler = Handler(Looper.getMainLooper())
 
+    // Si tiene empresaId → admin creado por una empresa (ve solo SUS conductores)
+    // Si es null       → admin global (ve TODOS los conductores)
+    private var empresaId: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_admin)
 
+        // ROL_ADMINISTRADOR cubre tanto el admin global como el admin de empresa
+        // (ambos tienen role = "administrador", se diferencian por empresaId)
         RoleGuard.verificar(this, User.ROL_ADMINISTRADOR) {
             iniciarUI()
         }
     }
 
     private fun iniciarUI() {
-
         db = FirebaseDatabase.getInstance().reference
 
         rvConductores       = findViewById(R.id.rvConductores)
@@ -46,65 +51,71 @@ class HomeAdminActivity : AppCompatActivity() {
         progressBar         = findViewById(R.id.progressBarAdmin)
 
         adapter = ConductorAdminAdapter(
-            lista      = listaConductores,
-            onEditar   = { mostrarDialogoEditar(it) },
-            onEliminar = { confirmarEliminar(it) }
+            lista          = listaConductores,
+            onEditar       = { mostrarDialogoEditar(it) },
+            onEliminar     = { confirmarEliminar(it) },
+            onVerHistorial = { conductor ->               // ← agregar esto
+                val intent = Intent(this, HistorialRecorridosActivity::class.java)
+                intent.putExtra("conductorUid",    conductor.uid)
+                intent.putExtra("conductorNombre", conductor.name)
+                startActivity(intent)
+            }
         )
-
         rvConductores.layoutManager = LinearLayoutManager(this)
         rvConductores.adapter = adapter
 
-        cargarConductores()
-
-        btnAgregarConductor.setOnClickListener {
-            mostrarDialogoCrear()
-        }
+        btnAgregarConductor.setOnClickListener { mostrarDialogoCrear() }
 
         btnIrCrearRuta.setOnClickListener {
             startActivity(Intent(this, HomeAdminRutasActivity::class.java))
         }
-
 
         btnCerrarSesion.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             startActivity(Intent(this, LogIn::class.java))
             finishAffinity()
         }
+
+        // Leer empresaId del admin logueado para saber si filtra o no
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        db.child("users").child(uid).child("empresaId").get()
+            .addOnSuccessListener { snap ->
+                empresaId = snap.getValue(String::class.java)
+                cargarConductores()
+            }
+            .addOnFailureListener {
+                cargarConductores() // si falla, carga sin filtro (admin global)
+            }
     }
 
     private fun cargarConductores() {
+        val query: Query = if (!empresaId.isNullOrEmpty()) {
+            // Admin de empresa: filtra por empresaId para ver solo SUS conductores
+            db.child("users").orderByChild("empresaId").equalTo(empresaId)
+        } else {
+            // Admin global: ve todos los conductores de la plataforma
+            db.child("users").orderByChild("role").equalTo(User.ROL_CONDUCTOR)
+        }
 
-        db.child("users")
-            .orderByChild("role")
-            .equalTo(User.ROL_CONDUCTOR)
-            .addValueEventListener(object : ValueEventListener {
-
-                override fun onDataChange(snapshot: DataSnapshot) {
-
-                    listaConductores.clear()
-
-                    for (child in snapshot.children) {
-                        child.getValue(User::class.java)?.let {
-                            listaConductores.add(it)
-                        }
+        query.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                listaConductores.clear()
+                for (child in snapshot.children) {
+                    val user = child.getValue(User::class.java) ?: continue
+                    if (user.role == User.ROL_CONDUCTOR) {
+                        listaConductores.add(user)
                     }
-
-                    adapter.notifyDataSetChanged()
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                    Toast.makeText(
-                        this@HomeAdminActivity,
-                        "Error: ${error.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
+                adapter.notifyDataSetChanged()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@HomeAdminActivity,
+                    "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun mostrarDialogoCrear() {
-
         val view = layoutInflater.inflate(R.layout.dialog_conductor, null)
 
         val edtNombre = view.findViewById<EditText>(R.id.edtNombreConductor)
@@ -117,7 +128,6 @@ class HomeAdminActivity : AppCompatActivity() {
             .setTitle("Crear conductor")
             .setView(view)
             .setPositiveButton("Crear") { _, _ ->
-
                 val nombre = edtNombre.text.toString().trim()
                 val email  = edtEmail.text.toString().trim()
                 val pass   = edtPass.text.toString().trim()
@@ -125,53 +135,39 @@ class HomeAdminActivity : AppCompatActivity() {
                 val placa  = edtPlaca.text.toString().trim()
 
                 if (nombre.isEmpty() || email.isEmpty() || pass.isEmpty()) {
-
-                    Toast.makeText(
-                        this,
+                    Toast.makeText(this,
                         "Nombre, email y contraseña son obligatorios",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
+                        Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
 
                 mostrarCarga(true)
 
+                val data = mutableMapOf<String, Any>(
+                    "nombre"   to nombre,
+                    "email"    to email,
+                    "password" to pass,
+                    "phone"    to phone,
+                    "placa"    to placa
+                )
+                // Vincula el conductor a la empresa si este admin pertenece a una
+                if (!empresaId.isNullOrEmpty()) {
+                    data["empresaId"] = empresaId!!
+                }
+
                 FunctionsHelper.call(
                     functionName = "crearConductor",
-                    data = mapOf(
-                        "nombre" to nombre,
-                        "email" to email,
-                        "password" to pass,
-                        "phone" to phone,
-                        "placa" to placa
-                    ),
-
+                    data = data,
                     onSuccess = {
-
                         mainHandler.post {
-
                             mostrarCarga(false)
-
-                            Toast.makeText(
-                                this,
-                                "Conductor creado",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(this, "Conductor creado", Toast.LENGTH_SHORT).show()
                         }
                     },
-
                     onFailure = { error ->
-
                         mainHandler.post {
-
                             mostrarCarga(false)
-
-                            Toast.makeText(
-                                this,
-                                "Error: $error",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show()
                         }
                     }
                 )
@@ -181,7 +177,6 @@ class HomeAdminActivity : AppCompatActivity() {
     }
 
     private fun mostrarDialogoEditar(conductor: User) {
-
         val view = layoutInflater.inflate(R.layout.dialog_conductor, null)
 
         val edtNombre = view.findViewById<EditText>(R.id.edtNombreConductor)
@@ -194,44 +189,53 @@ class HomeAdminActivity : AppCompatActivity() {
         edtPhone.setText(conductor.phone)
         edtPlaca.setText(conductor.placa)
         edtEmail.setText(conductor.email)
-
         edtEmail.isEnabled = false
 
         AlertDialog.Builder(this)
             .setTitle("Editar conductor")
             .setView(view)
             .setPositiveButton("Guardar") { _, _ ->
-
-                Toast.makeText(
-                    this,
-                    "Conductor actualizado",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val uid = conductor.uid ?: return@setPositiveButton
+                val updates = mapOf(
+                    "name"  to edtNombre.text.toString().trim(),
+                    "phone" to edtPhone.text.toString().trim(),
+                    "placa" to edtPlaca.text.toString().trim()
+                )
+                db.child("users").child(uid).updateChildren(updates)
+                Toast.makeText(this, "Conductor actualizado", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("Cancelar", null)
             .show()
     }
 
     private fun confirmarEliminar(conductor: User) {
-
         AlertDialog.Builder(this)
             .setTitle("Eliminar conductor")
             .setMessage("¿Seguro que deseas eliminar a ${conductor.name}?")
             .setPositiveButton("Eliminar") { _, _ ->
-
-                Toast.makeText(
-                    this,
-                    "Conductor eliminado",
-                    Toast.LENGTH_SHORT
-                ).show()
+                mostrarCarga(true)
+                FunctionsHelper.call(
+                    functionName = "eliminarUsuario",
+                    data = mapOf("uid" to (conductor.uid ?: "")),
+                    onSuccess = {
+                        mainHandler.post {
+                            mostrarCarga(false)
+                            Toast.makeText(this, "Conductor eliminado", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    onFailure = { error ->
+                        mainHandler.post {
+                            mostrarCarga(false)
+                            Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                )
             }
             .setNegativeButton("Cancelar", null)
             .show()
     }
 
     private fun mostrarCarga(mostrar: Boolean) {
-
-        progressBar.visibility =
-            if (mostrar) View.VISIBLE else View.GONE
+        progressBar.visibility = if (mostrar) View.VISIBLE else View.GONE
     }
 }

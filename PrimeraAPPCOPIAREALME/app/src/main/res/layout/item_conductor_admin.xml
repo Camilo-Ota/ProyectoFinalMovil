@@ -72,5 +72,11 @@
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:backgroundTint="#D32F2F" />
+        <Button
+            android:id="@+id/btnVerHistorialConductor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ver historial"
+            android:backgroundTint="#1565C0" />
     </LinearLayout>
 </LinearLayout>

@@ -1,7 +1,5 @@
 package com.camilootal.copia1app
 
-import android.content.Context
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONObject
 import java.io.OutputStreamWriter
@@ -10,7 +8,6 @@ import java.net.URL
 
 /**
  * Helper para llamar Cloud Functions Gen 2 enviando el token manualmente.
- * Reemplaza functions.getHttpsCallable() que no adjunta el token correctamente en Gen 2.
  */
 object FunctionsHelper {
 
@@ -28,14 +25,12 @@ object FunctionsHelper {
             return
         }
 
-        // Obtener token fresco y luego hacer la llamada HTTP
         user.getIdToken(true)
             .addOnSuccessListener { tokenResult ->
                 val token = tokenResult.token ?: run {
                     onFailure("No se pudo obtener el token de autenticación.")
                     return@addOnSuccessListener
                 }
-                // Ejecutar la llamada HTTP en un hilo separado
                 Thread {
                     try {
                         val result = callHttp(functionName, data, token)
@@ -48,6 +43,7 @@ object FunctionsHelper {
             .addOnFailureListener { e ->
                 onFailure("Error de autenticación: ${e.message}")
             }
+
     }
 
     private fun callHttp(functionName: String, data: Map<String, Any>, token: String): JSONObject {
@@ -61,7 +57,6 @@ object FunctionsHelper {
         connection.connectTimeout = 15000
         connection.readTimeout = 15000
 
-        // Cloud Functions Callable espera { "data": { ... } }
         val body = JSONObject()
         body.put("data", JSONObject(data))
 
@@ -71,14 +66,33 @@ object FunctionsHelper {
         writer.close()
 
         val responseCode = connection.responseCode
+
+        // ✅ FIX: Leer el stream correcto y protegerse contra null
         val responseStream = if (responseCode in 200..299) {
             connection.inputStream
         } else {
-            connection.errorStream
+            connection.errorStream ?: connection.inputStream
         }
 
-        val response = responseStream.bufferedReader().readText()
-        val json = JSONObject(response)
+        val response = responseStream?.bufferedReader()?.readText()
+            ?: throw Exception("Sin respuesta del servidor (código $responseCode)")
+
+        // ✅ FIX: Verificar que la respuesta es JSON antes de parsearla
+        val trimmed = response.trim()
+        if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) {
+            // El servidor devolvió HTML u otro contenido no-JSON
+            throw Exception(
+                when (responseCode) {
+                    401 -> "No autorizado. Verifica que tu usuario tenga el rol correcto."
+                    403 -> "Acceso denegado. Solo empresa_transporte puede crear administradores."
+                    404 -> "La función '$functionName' no existe en el servidor."
+                    500 -> "Error interno del servidor. Revisa los logs de Firebase."
+                    else -> "Error del servidor ($responseCode). Respuesta inesperada."
+                }
+            )
+        }
+
+        val json = JSONObject(trimmed)
 
         if (responseCode !in 200..299) {
             val error = json.optJSONObject("error")
@@ -86,7 +100,6 @@ object FunctionsHelper {
             throw Exception(message)
         }
 
-        // Gen 2 devuelve { "result": { ... } }
         return json.optJSONObject("result") ?: json
     }
 }

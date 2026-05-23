@@ -18,12 +18,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Copia1APP"
         tools:targetApi="31">
+
         <activity
             android:name=".DetalleRecorridoActivity"
             android:exported="false" />
         <activity
             android:name=".HomeAdminRutasActivity"
             android:exported="false" />
+
         <!-- ── Compartidas ─────────────────────────────────────── -->
         <activity
             android:name=".RecoverPassword"
@@ -39,7 +41,14 @@
             android:exported="false" />
         <activity
             android:name=".CanalConductoresActivity"
-            android:exported="false" /> <!-- ── Administrador ──────────────────────────────────── -->
+            android:exported="false" />
+
+        <!-- ── Empresa de Transporte ─────────────────────────────── -->
+        <activity
+            android:name=".HomeEmpresaActivity"
+            android:exported="false" />
+
+        <!-- ── Administrador ──────────────────────────────────────── -->
         <activity
             android:name=".HomeAdminActivity"
             android:exported="false" />
@@ -51,7 +60,9 @@
             android:exported="false" />
         <activity
             android:name=".ConfigurarPuntosRutaActivity"
-            android:exported="false" /> <!-- ── Conductor ──────────────────────────────────────── -->
+            android:exported="false" />
+
+        <!-- ── Conductor ─────────────────────────────────────────── -->
         <activity
             android:name=".HomeRutasActivity"
             android:exported="false" />
@@ -66,7 +77,9 @@
             android:exported="false" />
         <activity
             android:name=".DatosUsuarioActivity"
-            android:exported="false" /> <!-- ── Usuario normal ─────────────────────────────────── -->
+            android:exported="false" />
+
+        <!-- ── Usuario normal ─────────────────────────────────────── -->
         <activity
             android:name=".HomeUsuarioActivity"
             android:exported="false" />
@@ -78,13 +91,14 @@
             android:exported="false" />
         <activity
             android:name=".MapaRutaEnVivoActivity"
-            android:exported="false" /> <!-- ── Launcher ──────────────────────────────────────── -->
+            android:exported="false" />
+
+        <!-- ── Launcher ──────────────────────────────────────────── -->
         <activity
             android:name=".LogIn"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

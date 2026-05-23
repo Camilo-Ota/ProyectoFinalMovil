@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class HomeAdminRutasActivity : AppCompatActivity() {
 
@@ -16,7 +18,6 @@ class HomeAdminRutasActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         RoleGuard.verificar(this, User.ROL_CONDUCTOR, User.ROL_ADMINISTRADOR) {
             iniciarUI()
         }
@@ -41,15 +42,44 @@ class HomeAdminRutasActivity : AppCompatActivity() {
         btnIrIniciarRecorrido.setOnClickListener {
             startActivity(Intent(this, ListaRutasRecorridoActivity::class.java))
         }
-        btnIrHistorialRecorridos.setOnClickListener {
-            startActivity(Intent(this, HistorialRecorridosActivity::class.java))
-        }
         btnIrDatosUsuario.setOnClickListener {
             startActivity(Intent(this, DatosUsuarioActivity::class.java))
         }
         btnIrBlogConductores.setOnClickListener {
             startActivity(Intent(this, CanalConductoresActivity::class.java))
         }
+
+        // Al tocar historial, detectar rol para saber qué mostrar
+        btnIrHistorialRecorridos.setOnClickListener {
+            abrirHistorialSegunRol()
+        }
     }
-    // onBackPressed eliminado → Android vuelve solo a HomeAdminActivity ✅
+
+    private fun abrirHistorialSegunRol() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        FirebaseDatabase.getInstance().reference
+            .child("users").child(uid)
+            .get()
+            .addOnSuccessListener { snap ->
+                val role      = snap.child("role").getValue(String::class.java)
+                val empresaId = snap.child("empresaId").getValue(String::class.java)
+
+                val intent = Intent(this, HistorialRecorridosActivity::class.java)
+
+                when (role) {
+                    User.ROL_ADMINISTRADOR -> {
+                        // Admin ve todos los recorridos de su empresa
+                        intent.putExtra("modo", "empresa")
+                        intent.putExtra("empresaId", empresaId)
+                    }
+                    User.ROL_CONDUCTOR -> {
+                        // Conductor ve solo sus propios recorridos
+                        intent.putExtra("modo", "propio")
+                        intent.putExtra("conductorUid", uid)
+                    }
+                }
+                startActivity(intent)
+            }
+    }
 }
