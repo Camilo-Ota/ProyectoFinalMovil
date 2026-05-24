@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/card_background"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp">
+
+    <View
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_card_accent"
+        android:layout_marginEnd="14dp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvNombreConductorBus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextoTitulo"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvBusActualConductor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/tvPlacaConductorBus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/colorTextoDescripcion"
+            android:layout_marginBottom="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAsignarBus"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="36dp"
+                android:text="Asignar bus"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="#FFFFFF"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnDesasignarBus"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="36dp"
+                android:text="Desasignar"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:backgroundTint="#455A64"
+                android:textColor="#FFFFFF"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -19,6 +19,7 @@
     <color name="colorTextoTitulo">#1A2A35</color>
     <color name="colorTextoSubtitulo">#BCBABE</color>
     <color name="colorTextoBoton">#FFFFFF</color>
+    <color name="colorTextoDescripcion">#666666</color>
 
         <!-- Extras -->
     <color name="colorBlanco">#FFFFFF</color>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Placa *"
+        android:textSize="12sp"
+        android:textColor="@color/colorTextoDescripcion"
+        android:layout_marginBottom="4dp" />
+
+    <EditText
+        android:id="@+id/etPlacaBus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ej: ABC-123"
+        android:inputType="textCapCharacters"
+        android:layout_marginBottom="14dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Modelo *"
+        android:textSize="12sp"
+        android:textColor="@color/colorTextoDescripcion"
+        android:layout_marginBottom="4dp" />
+
+    <EditText
+        android:id="@+id/etModeloBus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ej: Chevrolet NHR"
+        android:inputType="textCapSentences"
+        android:layout_marginBottom="14dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Capacidad (pasajeros)"
+        android:textSize="12sp"
+        android:textColor="@color/colorTextoDescripcion"
+        android:layout_marginBottom="4dp" />
+
+    <EditText
+        android:id="@+id/etCapacidadBus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ej: 30"
+        android:inputType="number" />
+
+</LinearLayout>

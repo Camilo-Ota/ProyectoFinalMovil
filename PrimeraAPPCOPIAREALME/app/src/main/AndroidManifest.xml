@@ -41,7 +41,17 @@
             android:exported="false" />
         <activity
             android:name=".CanalConductoresActivity"
-            android:exported="false" /> <!-- ── Empresa de Transporte ─────────────────────────────── -->
+            android:exported="false" />
+
+        <activity android:name=".GestionBusesActivity"
+            android:exported="false" />
+
+        <activity android:name=".AsignarBusConductorActivity"
+            android:exported="false" />
+
+
+
+        <!-- ── Empresa de Transporte ─────────────────────────────── -->
         <activity
             android:name=".HomeEmpresaActivity"
             android:exported="false" /> <!-- ── Administrador ──────────────────────────────────────── -->

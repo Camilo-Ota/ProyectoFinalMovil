@@ -42,6 +42,18 @@
         android:layout_marginBottom="8dp" />
 
     <Button
+        android:id="@+id/btnGestionarFlota"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gestionar flota de buses"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/colorGris"
+        android:padding="12dp"
+        android:layout_marginBottom="10dp" />
+
+    <Button
         android:id="@+id/btnAgregarAdmin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

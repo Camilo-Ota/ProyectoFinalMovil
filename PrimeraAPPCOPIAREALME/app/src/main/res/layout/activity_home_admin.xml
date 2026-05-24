@@ -47,6 +47,19 @@
         android:layout_marginBottom="16dp">
 
         <Button
+            android:id="@+id/btnAsignarBuses"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Asignar buses"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#1995AD"
+            android:layout_marginEnd="8dp"
+            android:padding="12dp" />
+
+        <Button
             android:id="@+id/btnAgregarConductor"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

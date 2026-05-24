@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBackground"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="28dp"
+    android:paddingBottom="16dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Flota de buses"
+        style="@style/HomeRutas.TituloScreen"
+        android:layout_marginBottom="6dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gestiona los buses de tu empresa"
+        style="@style/HomeRutas.CardDescripcion"
+        android:layout_marginBottom="20dp" />
+
+    <Button
+        android:id="@+id/btnAgregarBus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+ Agregar bus"
+        style="@style/HomeRutas.BotonPrimario"
+        android:layout_marginBottom="16dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBarBuses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvSinBuses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No tienes buses registrados.\nToca '+ Agregar bus' para comenzar."
+        android:textColor="@color/negro"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="40dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvBuses"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

@@ -11,17 +11,19 @@ import java.util.*
 
 class HistorialRecorridosAdapter(
     private val listaRecorridos: List<Pair<Recorrido, Int>>,
-    private val onItemClick: (Recorrido) -> Unit       // ✅ callback al hacer click
+    private val onItemClick: (Recorrido) -> Unit
 ) : RecyclerView.Adapter<HistorialRecorridosAdapter.HistorialViewHolder>() {
 
     class HistorialViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvRutaHistorialItem: TextView           = itemView.findViewById(R.id.tvRutaHistorialItem)
-        val tvEstadoHistorialItem: TextView         = itemView.findViewById(R.id.tvEstadoHistorialItem)
-        val tvInicioHistorialItem: TextView         = itemView.findViewById(R.id.tvInicioHistorialItem)
-        val tvFinHistorialItem: TextView            = itemView.findViewById(R.id.tvFinHistorialItem)
-        val tvTiempoTotalHistorialItem: TextView    = itemView.findViewById(R.id.tvTiempoTotalHistorialItem)
+        val tvRutaHistorialItem         : TextView = itemView.findViewById(R.id.tvRutaHistorialItem)
+        val tvEstadoHistorialItem       : TextView = itemView.findViewById(R.id.tvEstadoHistorialItem)
+        val tvInicioHistorialItem       : TextView = itemView.findViewById(R.id.tvInicioHistorialItem)
+        val tvFinHistorialItem          : TextView = itemView.findViewById(R.id.tvFinHistorialItem)
+        val tvTiempoTotalHistorialItem  : TextView = itemView.findViewById(R.id.tvTiempoTotalHistorialItem)
         val tvCantidadPuntosHistorialItem: TextView = itemView.findViewById(R.id.tvCantidadPuntosHistorialItem)
-        val tvVerDetalle: TextView                  = itemView.findViewById(R.id.tvVerDetalle)
+        val tvConductorHistorialItem    : TextView = itemView.findViewById(R.id.tvConductorHistorialItem)
+        val tvBusHistorialItem          : TextView = itemView.findViewById(R.id.tvBusHistorialItem)
+        val tvVerDetalle                : TextView = itemView.findViewById(R.id.tvVerDetalle)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistorialViewHolder {
@@ -33,9 +35,9 @@ class HistorialRecorridosAdapter(
     override fun onBindViewHolder(holder: HistorialViewHolder, position: Int) {
         val (recorrido, cantidadPuntos) = listaRecorridos[position]
 
-        holder.tvRutaHistorialItem.text           = "Ruta: ${recorrido.rutaNombre}"
-        holder.tvInicioHistorialItem.text         = "Inicio: ${formatearFechaHora(recorrido.inicioTiempo)}"
-        holder.tvCantidadPuntosHistorialItem.text = "Puntos recorridos: $cantidadPuntos"
+        holder.tvRutaHistorialItem.text            = "Ruta: ${recorrido.rutaNombre}"
+        holder.tvInicioHistorialItem.text          = "Inicio: ${formatearFechaHora(recorrido.inicioTiempo)}"
+        holder.tvCantidadPuntosHistorialItem.text  = "Puntos recorridos: $cantidadPuntos"
 
         holder.tvFinHistorialItem.text =
             if (recorrido.finTiempo > 0L) "Fin: ${formatearFechaHora(recorrido.finTiempo)}"
@@ -46,7 +48,24 @@ class HistorialRecorridosAdapter(
             else if (recorrido.estado == "en_proceso") "Duración: En curso"
             else "Duración: --"
 
-        // Estado con color y etiqueta legible
+        // ── Conductor ─────────────────────────────────────────────────────────
+        holder.tvConductorHistorialItem.text =
+            if (recorrido.conductorNombre.isNotEmpty()) "👤 Conductor: ${recorrido.conductorNombre}"
+            else "👤 Conductor: no registrado"
+
+        // ── Bus ───────────────────────────────────────────────────────────────
+        holder.tvBusHistorialItem.text = when {
+            recorrido.busPlaca.isNotEmpty() && recorrido.busModelo.isNotEmpty() ->
+                "🚌 Bus: ${recorrido.busPlaca} — ${recorrido.busModelo}"
+            recorrido.busPlaca.isNotEmpty() ->
+                "🚌 Bus: ${recorrido.busPlaca}"
+            recorrido.busId.isNotEmpty() ->
+                "🚌 Bus asignado (sin datos)"
+            else ->
+                "🚌 Sin bus registrado"
+        }
+
+        // ── Estado con color ──────────────────────────────────────────────────
         val (textoEstado, colorEstado) = when (recorrido.estado) {
             "finalizado_automatico" -> "✅ Finalizado automático" to Color.parseColor("#1B5E20")
             "finalizado_manual"     -> "🔶 Finalizado manual"     to Color.parseColor("#E65100")
@@ -56,13 +75,11 @@ class HistorialRecorridosAdapter(
         holder.tvEstadoHistorialItem.text = textoEstado
         holder.tvEstadoHistorialItem.setTextColor(colorEstado)
 
-        // ✅ Texto del botón de detalle según estado
         holder.tvVerDetalle.text = if (recorrido.estado == "en_proceso")
             "Ver detalle / Continuar o Finalizar →"
         else
             "Ver detalle en mapa →"
 
-        // Click en toda la card
         holder.itemView.setOnClickListener { onItemClick(recorrido) }
         holder.tvVerDetalle.setOnClickListener { onItemClick(recorrido) }
     }

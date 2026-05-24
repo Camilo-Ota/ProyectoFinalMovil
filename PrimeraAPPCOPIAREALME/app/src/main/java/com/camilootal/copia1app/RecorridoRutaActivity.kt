@@ -32,7 +32,7 @@ class RecorridoRutaActivity : AppCompatActivity() {
     private lateinit var tvProgresoRecorrido: TextView
     private lateinit var btnIniciarRecorrido: Button
     private lateinit var btnFinalizarManualRecorrido: Button
-    private lateinit var btnNavegacionConductor: Button       // ← NUEVO
+    private lateinit var btnNavegacionConductor: Button
     private lateinit var recyclerPuntosSeguimiento: RecyclerView
 
     private val db = FirebaseDatabase.getInstance().reference
@@ -69,7 +69,7 @@ class RecorridoRutaActivity : AppCompatActivity() {
         tvProgresoRecorrido          = findViewById(R.id.tvProgresoRecorrido)
         btnIniciarRecorrido          = findViewById(R.id.btnIniciarRecorrido)
         btnFinalizarManualRecorrido  = findViewById(R.id.btnFinalizarManualRecorrido)
-        btnNavegacionConductor       = findViewById(R.id.btnNavegacionConductor)   // ← NUEVO
+        btnNavegacionConductor       = findViewById(R.id.btnNavegacionConductor)
         recyclerPuntosSeguimiento    = findViewById(R.id.recyclerPuntosSeguimiento)
 
         rutaId     = intent.getStringExtra("rutaId") ?: ""
@@ -85,9 +85,7 @@ class RecorridoRutaActivity : AppCompatActivity() {
         tvRutaRecorrido.text   = "Ruta: $rutaNombre"
         tvEstadoRecorrido.text = "Estado: cargando puntos..."
 
-        // ── RecyclerView de seguimiento ──────────────────────────────────────
         recyclerPuntosSeguimiento.layoutManager = LinearLayoutManager(this)
-        // FIX: nestedScrollingEnabled = false para que el scroll funcione bien dentro del ScrollView
         recyclerPuntosSeguimiento.isNestedScrollingEnabled = false
         puntoSeguimientoAdapter = PuntoSeguimientoAdapter(listaSeguimiento)
         recyclerPuntosSeguimiento.adapter = puntoSeguimientoAdapter
@@ -105,8 +103,7 @@ class RecorridoRutaActivity : AppCompatActivity() {
         btnIniciarRecorrido.setOnClickListener { iniciarRecorrido() }
         btnFinalizarManualRecorrido.setOnClickListener { solicitarClaveFinalizacion() }
 
-        // ── Botón navegación conductor ───────────────────────────────────────
-        btnNavegacionConductor.isEnabled = false   // se activa al iniciar recorrido
+        btnNavegacionConductor.isEnabled = false
         btnNavegacionConductor.setOnClickListener { abrirNavegacionConductor() }
 
         cargarPuntosRuta()
@@ -122,7 +119,6 @@ class RecorridoRutaActivity : AppCompatActivity() {
             putExtra("rutaNombre",   rutaNombre)
             putExtra("recorridoId",  recorridoId)
             putExtra("indicePunto",  indicePuntoActual)
-            // Pasar los puntos como arrays para no releer Firebase
             putExtra("puntosNombres",   listaPuntos.map { it.nombre }.toTypedArray())
             putExtra("puntosLats",      listaPuntos.map { it.latitud }.toDoubleArray())
             putExtra("puntosLngs",      listaPuntos.map { it.longitud }.toDoubleArray())
@@ -137,7 +133,6 @@ class RecorridoRutaActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        // Sincronizar progreso si el conductor avanzó puntos desde la pantalla de navegación
         if (requestCode == REQ_NAVEGACION && data != null) {
             val nuevoIndice = data.getIntExtra("indicePunto", indicePuntoActual)
             if (nuevoIndice > indicePuntoActual) {
@@ -158,7 +153,6 @@ class RecorridoRutaActivity : AppCompatActivity() {
                 for (puntoSnap in snapshot.children) {
                     val punto = puntoSnap.getValue(PuntoRuta::class.java)
                     if (punto != null) {
-                        // FIX: asignar el key de Firebase como id si está vacío
                         if (punto.id.isEmpty()) punto.id = puntoSnap.key ?: ""
                         listaPuntos.add(punto)
                     }
@@ -205,8 +199,6 @@ class RecorridoRutaActivity : AppCompatActivity() {
         tvPuntoSiguienteRecorrido.text = "Siguiente punto: ${listaPuntos.first().nombre}"
         btnIniciarRecorrido.isEnabled  = true
         puntoSeguimientoAdapter.notifyDataSetChanged()
-
-        // FIX: hacer scroll automático al primer punto pendiente
         recyclerPuntosSeguimiento.scrollToPosition(0)
     }
 
@@ -236,7 +228,7 @@ class RecorridoRutaActivity : AppCompatActivity() {
         indicePuntoActual                    = 0
         btnIniciarRecorrido.isEnabled        = false
         btnFinalizarManualRecorrido.isEnabled = true
-        btnNavegacionConductor.isEnabled     = true    // ← habilitar
+        btnNavegacionConductor.isEnabled     = true
         tvEstadoRecorrido.text               = "Estado: recorrido reanudado"
         tvTiempoInicioRecorrido.text         = "Inicio: ${formatearFechaHora(tiempoInicioRecorrido)}"
         if (listaPuntos.isNotEmpty()) {
@@ -248,6 +240,11 @@ class RecorridoRutaActivity : AppCompatActivity() {
         Toast.makeText(this, "Recorrido reanudado", Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Inicia el recorrido. Antes de guardarlo, lee el perfil completo del conductor
+     * (nombre, busAsignado, busPlaca, busModelo) para desnormalizarlo en el recorrido.
+     * Así el historial siempre muestra quién manejó y con qué bus.
+     */
     private fun iniciarRecorrido() {
         if (recorridoIniciado) {
             Toast.makeText(this, "El recorrido ya fue iniciado", Toast.LENGTH_SHORT).show()
@@ -259,38 +256,53 @@ class RecorridoRutaActivity : AppCompatActivity() {
         }
 
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-        val ref = db.child("recorridos").push()
-        recorridoId           = ref.key ?: ""
-        tiempoInicioRecorrido = System.currentTimeMillis()
-        tiempoUltimoPunto     = tiempoInicioRecorrido
-        indicePuntoActual     = 0
 
-        val recorrido = Recorrido(
-            id            = recorridoId,
-            rutaId        = rutaId,
-            rutaNombre    = rutaNombre,
-            usuarioId     = uid,
-            inicioTiempo  = tiempoInicioRecorrido,
-            finTiempo     = 0L,
-            tiempoTotalMs = 0L,
-            estado        = "en_proceso"
-        )
+        // Leer perfil del conductor para obtener nombre y datos del bus asignado
+        db.child("users").child(uid).get()
+            .addOnSuccessListener { snap ->
+                val conductor = snap.getValue(User::class.java)
 
-        ref.setValue(recorrido).addOnSuccessListener {
-            recorridoIniciado                    = true
-            btnIniciarRecorrido.isEnabled        = false
-            btnFinalizarManualRecorrido.isEnabled = true
-            btnNavegacionConductor.isEnabled     = true    // ← habilitar al iniciar
-            tvEstadoRecorrido.text               = "Estado: recorrido iniciado"
-            tvTiempoInicioRecorrido.text         = "Inicio: ${formatearFechaHora(tiempoInicioRecorrido)}"
-            if (listaPuntos.isNotEmpty()) {
-                tvPuntoSiguienteRecorrido.text = "Siguiente punto: ${listaPuntos[indicePuntoActual].nombre}"
+                val ref = db.child("recorridos").push()
+                recorridoId           = ref.key ?: ""
+                tiempoInicioRecorrido = System.currentTimeMillis()
+                tiempoUltimoPunto     = tiempoInicioRecorrido
+                indicePuntoActual     = 0
+
+                val recorrido = Recorrido(
+                    id              = recorridoId,
+                    rutaId          = rutaId,
+                    rutaNombre      = rutaNombre,
+                    usuarioId       = uid,
+                    inicioTiempo    = tiempoInicioRecorrido,
+                    finTiempo       = 0L,
+                    tiempoTotalMs   = 0L,
+                    estado          = "en_proceso",
+                    // ── Info del conductor y bus al momento de iniciar ────────
+                    conductorNombre = conductor?.name    ?: "",
+                    busId           = conductor?.busAsignado ?: "",
+                    busPlaca        = conductor?.busPlaca    ?: "",
+                    busModelo       = conductor?.busModelo   ?: ""
+                )
+
+                ref.setValue(recorrido).addOnSuccessListener {
+                    recorridoIniciado                    = true
+                    btnIniciarRecorrido.isEnabled        = false
+                    btnFinalizarManualRecorrido.isEnabled = true
+                    btnNavegacionConductor.isEnabled     = true
+                    tvEstadoRecorrido.text               = "Estado: recorrido iniciado"
+                    tvTiempoInicioRecorrido.text         = "Inicio: ${formatearFechaHora(tiempoInicioRecorrido)}"
+                    if (listaPuntos.isNotEmpty()) {
+                        tvPuntoSiguienteRecorrido.text = "Siguiente punto: ${listaPuntos[indicePuntoActual].nombre}"
+                    }
+                    construirSeguimientoInicial()
+                    actualizarSeguimientoVisual()
+                    iniciarActualizacionUbicacion()
+                    Toast.makeText(this, "Recorrido iniciado correctamente", Toast.LENGTH_SHORT).show()
+                }
             }
-            construirSeguimientoInicial()
-            actualizarSeguimientoVisual()
-            iniciarActualizacionUbicacion()
-            Toast.makeText(this, "Recorrido iniciado correctamente", Toast.LENGTH_SHORT).show()
-        }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al cargar datos del conductor", Toast.LENGTH_LONG).show()
+            }
     }
 
     @SuppressLint("MissingPermission")
@@ -351,7 +363,6 @@ class RecorridoRutaActivity : AppCompatActivity() {
             else "✅ Recorrido completado"
             actualizarSeguimientoVisual()
 
-            // FIX: hacer scroll al punto actual automáticamente
             if (indicePuntoActual < listaSeguimiento.size) {
                 recyclerPuntosSeguimiento.scrollToPosition(indicePuntoActual)
             }
@@ -390,12 +401,9 @@ class RecorridoRutaActivity : AppCompatActivity() {
     }
 
     private fun actualizarSeguimientoVisual() {
-        // FIX: marcar correctamente completados vs siguiente vs pendiente
         for (i in listaSeguimiento.indices) {
             listaSeguimiento[i].esSiguiente = false
-            if (i < indicePuntoActual) {
-                listaSeguimiento[i].completado = true
-            }
+            if (i < indicePuntoActual) listaSeguimiento[i].completado = true
         }
         if (indicePuntoActual < listaSeguimiento.size) {
             listaSeguimiento[indicePuntoActual].esSiguiente = true

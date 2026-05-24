@@ -22,6 +22,7 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
+        <!-- Ruta -->
         <TextView
             android:id="@+id/tvRutaHistorialItem"
             android:layout_width="match_parent"
@@ -30,6 +31,7 @@
             style="@style/HomeRutas.CardTitulo"
             android:layout_marginBottom="6dp" />
 
+        <!-- Estado -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,6 +52,34 @@
                 android:textColor="@color/colorPrimary" />
         </LinearLayout>
 
+        <!-- Conductor -->
+        <TextView
+            android:id="@+id/tvConductorHistorialItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="👤 Conductor: —"
+            style="@style/HomeRutas.CardDescripcion"
+            android:textStyle="bold"
+            android:layout_marginBottom="3dp" />
+
+        <!-- Bus -->
+        <TextView
+            android:id="@+id/tvBusHistorialItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🚌 Bus: —"
+            style="@style/HomeRutas.CardDescripcion"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Separador visual -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Tiempos -->
         <TextView
             android:id="@+id/tvInicioHistorialItem"
             android:layout_width="match_parent"
@@ -81,6 +111,7 @@
             android:text="Puntos registrados: 3"
             style="@style/HomeRutas.CardDescripcion" />
 
+        <!-- Ver detalle -->
         <TextView
             android:id="@+id/tvVerDetalle"
             android:layout_width="wrap_content"

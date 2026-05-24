@@ -13,20 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
-/**
- * Pantalla principal del rol EMPRESA_TRANSPORTE.
- *
- * La empresa crea administradores (ROL_ADMINISTRADOR) vinculados
- * a ella mediante el campo empresaId. Esos admins usan la misma
- * HomeAdminActivity de siempre, pero al detectar su empresaId
- * solo ven y crean conductores de su empresa.
- */
 class HomeEmpresaActivity : AppCompatActivity() {
 
     private lateinit var db: DatabaseReference
     private lateinit var rvAdmins: RecyclerView
     private lateinit var btnAgregarAdmin: Button
     private lateinit var btnCerrarSesion: Button
+    private lateinit var btnGestionarFlota: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var tvNombreEmpresa: TextView
 
@@ -40,23 +33,22 @@ class HomeEmpresaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_empresa)
-
-        RoleGuard.verificar(this, User.ROL_EMPRESA) {
-            iniciarUI()
-        }
+        RoleGuard.verificar(this, User.ROL_EMPRESA) { iniciarUI() }
     }
 
     private fun iniciarUI() {
         db = FirebaseDatabase.getInstance().reference
 
-        tvNombreEmpresa = findViewById(R.id.tvNombreEmpresa)
-        rvAdmins        = findViewById(R.id.rvAdminsEmpresa)
-        btnAgregarAdmin = findViewById(R.id.btnAgregarAdmin)
-        btnCerrarSesion = findViewById(R.id.btnCerrarSesionEmpresa)
-        progressBar     = findViewById(R.id.progressBarEmpresa)
+        tvNombreEmpresa   = findViewById(R.id.tvNombreEmpresa)
+        rvAdmins          = findViewById(R.id.rvAdminsEmpresa)
+        btnAgregarAdmin   = findViewById(R.id.btnAgregarAdmin)
+        btnCerrarSesion   = findViewById(R.id.btnCerrarSesionEmpresa)
+        btnGestionarFlota = findViewById(R.id.btnGestionarFlota)
+        progressBar       = findViewById(R.id.progressBarEmpresa)
 
         adapter = AdminEmpresaAdapter(
             lista      = listaAdmins,
+            onEditar   = { mostrarDialogoEditar(it) },   // ← ahora sí se pasa
             onEliminar = { confirmarEliminar(it) }
         )
         rvAdmins.layoutManager = LinearLayoutManager(this)
@@ -66,6 +58,10 @@ class HomeEmpresaActivity : AppCompatActivity() {
         cargarAdmins()
 
         btnAgregarAdmin.setOnClickListener { mostrarDialogoCrearAdmin() }
+
+        btnGestionarFlota.setOnClickListener {
+            startActivity(Intent(this, GestionBusesActivity::class.java))
+        }
 
         btnCerrarSesion.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
@@ -82,7 +78,6 @@ class HomeEmpresaActivity : AppCompatActivity() {
     }
 
     private fun cargarAdmins() {
-        // Filtramos por empresaId para ver solo los admins de esta empresa
         db.child("users")
             .orderByChild("empresaId")
             .equalTo(empresaUid)
@@ -91,10 +86,7 @@ class HomeEmpresaActivity : AppCompatActivity() {
                     listaAdmins.clear()
                     for (child in snapshot.children) {
                         val user = child.getValue(User::class.java) ?: continue
-                        // Solo mostramos admins (no conductores que también tienen empresaId)
-                        if (user.role == User.ROL_ADMINISTRADOR) {
-                            listaAdmins.add(user)
-                        }
+                        if (user.role == User.ROL_ADMINISTRADOR) listaAdmins.add(user)
                     }
                     adapter.notifyDataSetChanged()
                 }
@@ -105,9 +97,10 @@ class HomeEmpresaActivity : AppCompatActivity() {
             })
     }
 
+    // ── Crear admin ───────────────────────────────────────────────────────────
+
     private fun mostrarDialogoCrearAdmin() {
         val view = layoutInflater.inflate(R.layout.dialog_admin_empresa, null)
-
         val edtNombre = view.findViewById<EditText>(R.id.edtNombreAdmin)
         val edtEmail  = view.findViewById<EditText>(R.id.edtEmailAdmin)
         val edtPass   = view.findViewById<EditText>(R.id.edtPasswordAdmin)
@@ -121,10 +114,8 @@ class HomeEmpresaActivity : AppCompatActivity() {
                 val email  = edtEmail.text.toString().trim()
                 val pass   = edtPass.text.toString().trim()
                 val phone  = edtPhone.text.toString().trim()
-
                 if (nombre.isEmpty() || email.isEmpty() || pass.isEmpty()) {
-                    Toast.makeText(this,
-                        "Nombre, email y contraseña son obligatorios",
+                    Toast.makeText(this, "Nombre, email y contraseña son obligatorios",
                         Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
@@ -136,18 +127,10 @@ class HomeEmpresaActivity : AppCompatActivity() {
 
     private fun crearAdmin(nombre: String, email: String, pass: String, phone: String) {
         mostrarCarga(true)
-
-        // Usamos la Cloud Function "crearAdminEmpresa"
-        // El admin se guarda con role = ROL_ADMINISTRADOR y empresaId = uid de esta empresa
         FunctionsHelper.call(
             functionName = "crearAdminEmpresa",
-            data = mapOf(
-                "nombre"    to nombre,
-                "email"     to email,
-                "password"  to pass,
-                "phone"     to phone,
-                "empresaId" to empresaUid
-            ),
+            data = mapOf("nombre" to nombre, "email" to email,
+                "password" to pass, "phone" to phone, "empresaId" to empresaUid),
             onSuccess = {
                 mainHandler.post {
                     mostrarCarga(false)
@@ -162,6 +145,80 @@ class HomeEmpresaActivity : AppCompatActivity() {
             }
         )
     }
+
+    // ── Editar admin ──────────────────────────────────────────────────────────
+
+    private fun mostrarDialogoEditar(admin: User) {
+        val view = layoutInflater.inflate(R.layout.dialog_admin_empresa, null)
+        val edtNombre = view.findViewById<EditText>(R.id.edtNombreAdmin)
+        val edtEmail  = view.findViewById<EditText>(R.id.edtEmailAdmin)
+        val edtPass   = view.findViewById<EditText>(R.id.edtPasswordAdmin)
+        val edtPhone  = view.findViewById<EditText>(R.id.edtPhoneAdmin)
+
+        // Precargamos los datos actuales
+        edtNombre.setText(admin.name)
+        edtEmail.setText(admin.email)
+        edtEmail.isEnabled = false          // el email no se puede cambiar
+        edtPass.hint = "Nueva contraseña (dejar vacío para no cambiar)"
+        edtPhone.setText(admin.phone)
+
+        AlertDialog.Builder(this)
+            .setTitle("Editar administrador")
+            .setView(view)
+            .setPositiveButton("Guardar") { _, _ ->
+                val uid    = admin.uid ?: return@setPositiveButton
+                val nombre = edtNombre.text.toString().trim()
+                val pass   = edtPass.text.toString().trim()
+                val phone  = edtPhone.text.toString().trim()
+
+                if (nombre.isEmpty()) {
+                    Toast.makeText(this, "El nombre no puede estar vacío",
+                        Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                // Actualizar nombre y teléfono directamente en la DB
+                val updates = mutableMapOf<String, Any>(
+                    "name"  to nombre,
+                    "phone" to phone
+                )
+                db.child("users").child(uid).updateChildren(updates)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Datos actualizados", Toast.LENGTH_SHORT).show()
+                    }
+
+                // Si escribió nueva contraseña, actualizarla vía Cloud Function
+                if (pass.isNotEmpty()) {
+                    if (pass.length < 6) {
+                        Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres",
+                            Toast.LENGTH_SHORT).show()
+                        return@setPositiveButton
+                    }
+                    mostrarCarga(true)
+                    FunctionsHelper.call(
+                        functionName = "actualizarPassword",
+                        data = mapOf("uid" to uid, "password" to pass),
+                        onSuccess = {
+                            mainHandler.post {
+                                mostrarCarga(false)
+                                Toast.makeText(this, "Contraseña actualizada", Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                        onFailure = { error ->
+                            mainHandler.post {
+                                mostrarCarga(false)
+                                Toast.makeText(this, "Error al cambiar contraseña: $error",
+                                    Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    )
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    // ── Eliminar admin ────────────────────────────────────────────────────────
 
     private fun confirmarEliminar(admin: User) {
         AlertDialog.Builder(this)
