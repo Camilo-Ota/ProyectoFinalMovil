@@ -116,6 +116,21 @@
             android:layout_marginBottom="10dp" />
 
         <Button
+            android:id="@+id/btnNavegacionConductor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ver mapa de navegación"
+            android:enabled="false"
+            android:backgroundTint="#1565C0"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginBottom="24dp" />
+
+        <Button
             android:id="@+id/btnFinalizarManualRecorrido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

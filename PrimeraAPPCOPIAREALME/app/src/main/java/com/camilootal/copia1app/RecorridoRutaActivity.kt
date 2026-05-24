@@ -2,12 +2,12 @@ package com.camilootal.copia1app
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -32,6 +32,7 @@ class RecorridoRutaActivity : AppCompatActivity() {
     private lateinit var tvProgresoRecorrido: TextView
     private lateinit var btnIniciarRecorrido: Button
     private lateinit var btnFinalizarManualRecorrido: Button
+    private lateinit var btnNavegacionConductor: Button       // ← NUEVO
     private lateinit var recyclerPuntosSeguimiento: RecyclerView
 
     private val db = FirebaseDatabase.getInstance().reference
@@ -48,8 +49,6 @@ class RecorridoRutaActivity : AppCompatActivity() {
     private var tiempoInicioRecorrido = 0L
     private var tiempoUltimoPunto = 0L
     private var indicePuntoActual = 0
-
-    // ✅ FIX: flag para saber si es reanudación desde el historial
     private var esReanudacion = false
 
     private lateinit var puntoSeguimientoAdapter: PuntoSeguimientoAdapter
@@ -70,13 +69,13 @@ class RecorridoRutaActivity : AppCompatActivity() {
         tvProgresoRecorrido          = findViewById(R.id.tvProgresoRecorrido)
         btnIniciarRecorrido          = findViewById(R.id.btnIniciarRecorrido)
         btnFinalizarManualRecorrido  = findViewById(R.id.btnFinalizarManualRecorrido)
+        btnNavegacionConductor       = findViewById(R.id.btnNavegacionConductor)   // ← NUEVO
         recyclerPuntosSeguimiento    = findViewById(R.id.recyclerPuntosSeguimiento)
 
         rutaId     = intent.getStringExtra("rutaId") ?: ""
         rutaNombre = intent.getStringExtra("rutaNombre") ?: ""
         rutaRadio  = intent.getFloatExtra("rutaRadio", 30f)
 
-        // ✅ FIX: Detectar reanudación desde DetalleRecorridoActivity
         esReanudacion = intent.getBooleanExtra("reanudar", false)
         if (esReanudacion) {
             recorridoId           = intent.getStringExtra("recorridoId") ?: ""
@@ -86,7 +85,10 @@ class RecorridoRutaActivity : AppCompatActivity() {
         tvRutaRecorrido.text   = "Ruta: $rutaNombre"
         tvEstadoRecorrido.text = "Estado: cargando puntos..."
 
+        // ── RecyclerView de seguimiento ──────────────────────────────────────
         recyclerPuntosSeguimiento.layoutManager = LinearLayoutManager(this)
+        // FIX: nestedScrollingEnabled = false para que el scroll funcione bien dentro del ScrollView
+        recyclerPuntosSeguimiento.isNestedScrollingEnabled = false
         puntoSeguimientoAdapter = PuntoSeguimientoAdapter(listaSeguimiento)
         recyclerPuntosSeguimiento.adapter = puntoSeguimientoAdapter
 
@@ -103,7 +105,50 @@ class RecorridoRutaActivity : AppCompatActivity() {
         btnIniciarRecorrido.setOnClickListener { iniciarRecorrido() }
         btnFinalizarManualRecorrido.setOnClickListener { solicitarClaveFinalizacion() }
 
+        // ── Botón navegación conductor ───────────────────────────────────────
+        btnNavegacionConductor.isEnabled = false   // se activa al iniciar recorrido
+        btnNavegacionConductor.setOnClickListener { abrirNavegacionConductor() }
+
         cargarPuntosRuta()
+    }
+
+    private fun abrirNavegacionConductor() {
+        if (!recorridoIniciado) {
+            Toast.makeText(this, "Primero inicia el recorrido", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val intent = Intent(this, NavegacionConductorActivity::class.java).apply {
+            putExtra("rutaId",       rutaId)
+            putExtra("rutaNombre",   rutaNombre)
+            putExtra("recorridoId",  recorridoId)
+            putExtra("indicePunto",  indicePuntoActual)
+            // Pasar los puntos como arrays para no releer Firebase
+            putExtra("puntosNombres",   listaPuntos.map { it.nombre }.toTypedArray())
+            putExtra("puntosLats",      listaPuntos.map { it.latitud }.toDoubleArray())
+            putExtra("puntosLngs",      listaPuntos.map { it.longitud }.toDoubleArray())
+            putExtra("puntosTipos",     listaPuntos.map { it.tipo }.toTypedArray())
+            putExtra("puntosIds",       listaPuntos.map { it.id }.toTypedArray())
+            putExtra("puntosOrdenes",   listaPuntos.map { it.orden }.toIntArray())
+            putExtra("rutaRadio",       rutaRadio)
+            putExtra("inicioTiempo",    tiempoInicioRecorrido)
+        }
+        startActivityForResult(intent, REQ_NAVEGACION)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // Sincronizar progreso si el conductor avanzó puntos desde la pantalla de navegación
+        if (requestCode == REQ_NAVEGACION && data != null) {
+            val nuevoIndice = data.getIntExtra("indicePunto", indicePuntoActual)
+            if (nuevoIndice > indicePuntoActual) {
+                indicePuntoActual = nuevoIndice
+                tvProgresoRecorrido.text = "Progreso: $indicePuntoActual/${listaPuntos.size}"
+                tvPuntoSiguienteRecorrido.text = if (indicePuntoActual < listaPuntos.size)
+                    "Siguiente punto: ${listaPuntos[indicePuntoActual].nombre}"
+                else "Siguiente punto: recorrido completado"
+                actualizarSeguimientoVisual()
+            }
+        }
     }
 
     private fun cargarPuntosRuta() {
@@ -112,12 +157,15 @@ class RecorridoRutaActivity : AppCompatActivity() {
                 listaPuntos.clear()
                 for (puntoSnap in snapshot.children) {
                     val punto = puntoSnap.getValue(PuntoRuta::class.java)
-                    if (punto != null) listaPuntos.add(punto)
+                    if (punto != null) {
+                        // FIX: asignar el key de Firebase como id si está vacío
+                        if (punto.id.isEmpty()) punto.id = puntoSnap.key ?: ""
+                        listaPuntos.add(punto)
+                    }
                 }
                 listaPuntos.sortBy { it.orden }
                 actualizarVistaPuntos()
 
-                // ✅ FIX: Si es reanudación, activar directamente sin re-crear el recorrido
                 if (esReanudacion && recorridoId.isNotEmpty()) {
                     reanudarRecorrido()
                 }
@@ -157,6 +205,9 @@ class RecorridoRutaActivity : AppCompatActivity() {
         tvPuntoSiguienteRecorrido.text = "Siguiente punto: ${listaPuntos.first().nombre}"
         btnIniciarRecorrido.isEnabled  = true
         puntoSeguimientoAdapter.notifyDataSetChanged()
+
+        // FIX: hacer scroll automático al primer punto pendiente
+        recyclerPuntosSeguimiento.scrollToPosition(0)
     }
 
     private fun construirSeguimientoInicial() {
@@ -179,15 +230,15 @@ class RecorridoRutaActivity : AppCompatActivity() {
         }
     }
 
-    // ✅ FIX: Reanuda sin crear nuevo recorrido en Firebase
     private fun reanudarRecorrido() {
-        recorridoIniciado              = true
-        tiempoUltimoPunto              = System.currentTimeMillis()
-        indicePuntoActual              = 0
-        btnIniciarRecorrido.isEnabled  = false
+        recorridoIniciado                    = true
+        tiempoUltimoPunto                    = System.currentTimeMillis()
+        indicePuntoActual                    = 0
+        btnIniciarRecorrido.isEnabled        = false
         btnFinalizarManualRecorrido.isEnabled = true
-        tvEstadoRecorrido.text         = "Estado: recorrido reanudado"
-        tvTiempoInicioRecorrido.text   = "Inicio: ${formatearFechaHora(tiempoInicioRecorrido)}"
+        btnNavegacionConductor.isEnabled     = true    // ← habilitar
+        tvEstadoRecorrido.text               = "Estado: recorrido reanudado"
+        tvTiempoInicioRecorrido.text         = "Inicio: ${formatearFechaHora(tiempoInicioRecorrido)}"
         if (listaPuntos.isNotEmpty()) {
             tvPuntoSiguienteRecorrido.text = "Siguiente punto: ${listaPuntos[0].nombre}"
         }
@@ -215,20 +266,21 @@ class RecorridoRutaActivity : AppCompatActivity() {
         indicePuntoActual     = 0
 
         val recorrido = Recorrido(
-            id           = recorridoId,
-            rutaId       = rutaId,
-            rutaNombre   = rutaNombre,
-            usuarioId    = uid,          // ✅ FIX: guardar uid para filtrar historial por conductor
-            inicioTiempo = tiempoInicioRecorrido,
-            finTiempo    = 0L,
+            id            = recorridoId,
+            rutaId        = rutaId,
+            rutaNombre    = rutaNombre,
+            usuarioId     = uid,
+            inicioTiempo  = tiempoInicioRecorrido,
+            finTiempo     = 0L,
             tiempoTotalMs = 0L,
-            estado       = "en_proceso"
+            estado        = "en_proceso"
         )
 
         ref.setValue(recorrido).addOnSuccessListener {
             recorridoIniciado                    = true
             btnIniciarRecorrido.isEnabled        = false
             btnFinalizarManualRecorrido.isEnabled = true
+            btnNavegacionConductor.isEnabled     = true    // ← habilitar al iniciar
             tvEstadoRecorrido.text               = "Estado: recorrido iniciado"
             tvTiempoInicioRecorrido.text         = "Inicio: ${formatearFechaHora(tiempoInicioRecorrido)}"
             if (listaPuntos.isNotEmpty()) {
@@ -262,7 +314,7 @@ class RecorridoRutaActivity : AppCompatActivity() {
         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
     private fun procesarUbicacion(location: Location) {
-        tvUbicacionActualRecorrido.text = "Ubicación actual: ${location.latitude}, ${location.longitude}"
+        tvUbicacionActualRecorrido.text = "Ubicación: ${String.format("%.5f", location.latitude)}, ${String.format("%.5f", location.longitude)}"
 
         if (recorridoIniciado && rutaId.isNotEmpty()) {
             val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
@@ -296,16 +348,22 @@ class RecorridoRutaActivity : AppCompatActivity() {
             tvProgresoRecorrido.text = "Progreso: $indicePuntoActual/${listaPuntos.size}"
             tvPuntoSiguienteRecorrido.text = if (indicePuntoActual < listaPuntos.size)
                 "Siguiente punto: ${listaPuntos[indicePuntoActual].nombre}"
-            else "Siguiente punto: recorrido completado"
+            else "✅ Recorrido completado"
             actualizarSeguimientoVisual()
+
+            // FIX: hacer scroll al punto actual automáticamente
+            if (indicePuntoActual < listaSeguimiento.size) {
+                recyclerPuntosSeguimiento.scrollToPosition(indicePuntoActual)
+            }
+
             if (puntoEsperado.tipo == "fin") finalizarRecorridoAutomatico()
         }
     }
 
     private fun registrarLlegadaPunto(punto: PuntoRuta) {
-        val ahora              = System.currentTimeMillis()
+        val ahora               = System.currentTimeMillis()
         val tiempoDesdeAnterior = ahora - tiempoUltimoPunto
-        val tiempoAcumulado    = ahora - tiempoInicioRecorrido
+        val tiempoAcumulado     = ahora - tiempoInicioRecorrido
 
         val puntoRegistrado = PuntoRegistrado(
             puntoId               = punto.id,
@@ -328,12 +386,18 @@ class RecorridoRutaActivity : AppCompatActivity() {
             listaSeguimiento[idx].tiempoDesdeAnteriorMs = tiempoDesdeAnterior
             listaSeguimiento[idx].tiempoAcumuladoRutaMs = tiempoAcumulado
         }
-        Toast.makeText(this, "Llegó al punto: ${punto.nombre}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "✅ Llegó a: ${punto.nombre}", Toast.LENGTH_SHORT).show()
     }
 
     private fun actualizarSeguimientoVisual() {
-        for (i in listaSeguimiento.indices) listaSeguimiento[i].esSiguiente = false
-        if (indicePuntoActual < listaSeguimiento.size && !listaSeguimiento[indicePuntoActual].completado) {
+        // FIX: marcar correctamente completados vs siguiente vs pendiente
+        for (i in listaSeguimiento.indices) {
+            listaSeguimiento[i].esSiguiente = false
+            if (i < indicePuntoActual) {
+                listaSeguimiento[i].completado = true
+            }
+        }
+        if (indicePuntoActual < listaSeguimiento.size) {
             listaSeguimiento[indicePuntoActual].esSiguiente = true
         }
         puntoSeguimientoAdapter.notifyDataSetChanged()
@@ -347,11 +411,12 @@ class RecorridoRutaActivity : AppCompatActivity() {
         db.child("recorridos").child(recorridoId).updateChildren(
             mapOf("finTiempo" to fin, "tiempoTotalMs" to total, "estado" to "finalizado_automatico")
         )
-        recorridoIniciado               = false
+        recorridoIniciado                    = false
         detenerActualizacionUbicacion()
-        tvEstadoRecorrido.text          = "Estado: recorrido completado ✓"
+        tvEstadoRecorrido.text               = "✅ Recorrido completado"
         btnFinalizarManualRecorrido.isEnabled = false
-        Toast.makeText(this, "Recorrido finalizado automáticamente", Toast.LENGTH_LONG).show()
+        btnNavegacionConductor.isEnabled     = false
+        Toast.makeText(this, "Recorrido finalizado automáticamente 🎉", Toast.LENGTH_LONG).show()
     }
 
     private fun finalizarRecorridoManual() {
@@ -362,14 +427,14 @@ class RecorridoRutaActivity : AppCompatActivity() {
         db.child("recorridos").child(recorridoId).updateChildren(
             mapOf("finTiempo" to fin, "tiempoTotalMs" to total, "estado" to "finalizado_manual")
         )
-        recorridoIniciado               = false
+        recorridoIniciado                    = false
         detenerActualizacionUbicacion()
-        tvEstadoRecorrido.text          = "Estado: recorrido finalizado"
+        tvEstadoRecorrido.text               = "Estado: recorrido finalizado"
         btnFinalizarManualRecorrido.isEnabled = false
+        btnNavegacionConductor.isEnabled     = false
         Toast.makeText(this, "Recorrido finalizado", Toast.LENGTH_SHORT).show()
     }
 
-    // ✅ FIX PRINCIPAL: marcar inactivo en onDestroy para evitar "en_proceso" indefinido
     private fun marcarConductorInactivo() {
         if (rutaId.isNotEmpty()) {
             val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
@@ -381,11 +446,7 @@ class RecorridoRutaActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         detenerActualizacionUbicacion()
-        // ✅ FIX: Si el conductor sale sin finalizar, marcar como inactivo en recorridos_activos
-        // pero NO cambiar el estado en "recorridos" — queda "en_proceso" para reanudar desde historial
-        if (recorridoIniciado) {
-            marcarConductorInactivo()
-        }
+        if (recorridoIniciado) marcarConductorInactivo()
     }
 
     private fun calcularDistanciaMetros(lat1: Double, lng1: Double, lat2: Double, lng2: Double): Float {
@@ -411,5 +472,9 @@ class RecorridoRutaActivity : AppCompatActivity() {
         if (requestCode == 1001 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             iniciarActualizacionUbicacion()
         }
+    }
+
+    companion object {
+        const val REQ_NAVEGACION = 2001
     }
 }
