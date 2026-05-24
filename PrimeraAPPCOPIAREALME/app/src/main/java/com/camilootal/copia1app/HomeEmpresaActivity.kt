@@ -27,6 +27,10 @@ class HomeEmpresaActivity : AppCompatActivity() {
     private lateinit var adapter: AdminEmpresaAdapter
     private val mainHandler = Handler(Looper.getMainLooper())
 
+    // ── Guardar referencia para poder remover en onDestroy ────────────────────
+    private var adminsListener: ValueEventListener? = null
+    private var adminsQuery: Query? = null
+
     private val empresaUid: String
         get() = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
@@ -48,7 +52,7 @@ class HomeEmpresaActivity : AppCompatActivity() {
 
         adapter = AdminEmpresaAdapter(
             lista      = listaAdmins,
-            onEditar   = { mostrarDialogoEditar(it) },   // ← ahora sí se pasa
+            onEditar   = { mostrarDialogoEditar(it) },
             onEliminar = { confirmarEliminar(it) }
         )
         rvAdmins.layoutManager = LinearLayoutManager(this)
@@ -58,16 +62,17 @@ class HomeEmpresaActivity : AppCompatActivity() {
         cargarAdmins()
 
         btnAgregarAdmin.setOnClickListener { mostrarDialogoCrearAdmin() }
-
         btnGestionarFlota.setOnClickListener {
             startActivity(Intent(this, GestionBusesActivity::class.java))
         }
+        btnCerrarSesion.setOnClickListener { cerrarSesion() }
+    }
 
-        btnCerrarSesion.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            startActivity(Intent(this, LogIn::class.java))
-            finishAffinity()
-        }
+    private fun cerrarSesion() {
+        desconectarListeners()
+        FirebaseAuth.getInstance().signOut()
+        startActivity(Intent(this, LogIn::class.java))
+        finishAffinity()
     }
 
     private fun cargarNombreEmpresa() {
@@ -78,26 +83,42 @@ class HomeEmpresaActivity : AppCompatActivity() {
     }
 
     private fun cargarAdmins() {
-        db.child("users")
+        val query = db.child("users")
             .orderByChild("empresaId")
             .equalTo(empresaUid)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    listaAdmins.clear()
-                    for (child in snapshot.children) {
-                        val user = child.getValue(User::class.java) ?: continue
-                        if (user.role == User.ROL_ADMINISTRADOR) listaAdmins.add(user)
-                    }
-                    adapter.notifyDataSetChanged()
+
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                listaAdmins.clear()
+                for (child in snapshot.children) {
+                    val user = child.getValue(User::class.java) ?: continue
+                    if (user.role == User.ROL_ADMINISTRADOR) listaAdmins.add(user)
                 }
-                override fun onCancelled(error: DatabaseError) {
+                adapter.notifyDataSetChanged()
+            }
+            override fun onCancelled(error: DatabaseError) {
+                if (FirebaseAuth.getInstance().currentUser != null) {
                     Toast.makeText(this@HomeEmpresaActivity,
                         "Error: ${error.message}", Toast.LENGTH_SHORT).show()
                 }
-            })
+            }
+        }
+
+        adminsQuery    = query
+        adminsListener = listener
+        query.addValueEventListener(listener)
     }
 
-    // ── Crear admin ───────────────────────────────────────────────────────────
+    private fun desconectarListeners() {
+        adminsListener?.let { adminsQuery?.removeEventListener(it) }
+        adminsListener = null
+        adminsQuery    = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        desconectarListeners()
+    }
 
     private fun mostrarDialogoCrearAdmin() {
         val view = layoutInflater.inflate(R.layout.dialog_admin_empresa, null)
@@ -115,8 +136,7 @@ class HomeEmpresaActivity : AppCompatActivity() {
                 val pass   = edtPass.text.toString().trim()
                 val phone  = edtPhone.text.toString().trim()
                 if (nombre.isEmpty() || email.isEmpty() || pass.isEmpty()) {
-                    Toast.makeText(this, "Nombre, email y contraseña son obligatorios",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Nombre, email y contraseña son obligatorios", Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
                 crearAdmin(nombre, email, pass, phone)
@@ -131,22 +151,10 @@ class HomeEmpresaActivity : AppCompatActivity() {
             functionName = "crearAdminEmpresa",
             data = mapOf("nombre" to nombre, "email" to email,
                 "password" to pass, "phone" to phone, "empresaId" to empresaUid),
-            onSuccess = {
-                mainHandler.post {
-                    mostrarCarga(false)
-                    Toast.makeText(this, "Administrador creado", Toast.LENGTH_SHORT).show()
-                }
-            },
-            onFailure = { error ->
-                mainHandler.post {
-                    mostrarCarga(false)
-                    Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show()
-                }
-            }
+            onSuccess = { mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Administrador creado", Toast.LENGTH_SHORT).show() } },
+            onFailure = { error -> mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show() } }
         )
     }
-
-    // ── Editar admin ──────────────────────────────────────────────────────────
 
     private fun mostrarDialogoEditar(admin: User) {
         val view = layoutInflater.inflate(R.layout.dialog_admin_empresa, null)
@@ -155,10 +163,9 @@ class HomeEmpresaActivity : AppCompatActivity() {
         val edtPass   = view.findViewById<EditText>(R.id.edtPasswordAdmin)
         val edtPhone  = view.findViewById<EditText>(R.id.edtPhoneAdmin)
 
-        // Precargamos los datos actuales
         edtNombre.setText(admin.name)
         edtEmail.setText(admin.email)
-        edtEmail.isEnabled = false          // el email no se puede cambiar
+        edtEmail.isEnabled = false
         edtPass.hint = "Nueva contraseña (dejar vacío para no cambiar)"
         edtPhone.setText(admin.phone)
 
@@ -170,47 +177,15 @@ class HomeEmpresaActivity : AppCompatActivity() {
                 val nombre = edtNombre.text.toString().trim()
                 val pass   = edtPass.text.toString().trim()
                 val phone  = edtPhone.text.toString().trim()
-
-                if (nombre.isEmpty()) {
-                    Toast.makeText(this, "El nombre no puede estar vacío",
-                        Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
-
-                // Actualizar nombre y teléfono directamente en la DB
-                val updates = mutableMapOf<String, Any>(
-                    "name"  to nombre,
-                    "phone" to phone
-                )
-                db.child("users").child(uid).updateChildren(updates)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Datos actualizados", Toast.LENGTH_SHORT).show()
-                    }
-
-                // Si escribió nueva contraseña, actualizarla vía Cloud Function
+                if (nombre.isEmpty()) { Toast.makeText(this, "El nombre no puede estar vacío", Toast.LENGTH_SHORT).show(); return@setPositiveButton }
+                db.child("users").child(uid).updateChildren(mapOf("name" to nombre, "phone" to phone))
+                    .addOnSuccessListener { Toast.makeText(this, "Datos actualizados", Toast.LENGTH_SHORT).show() }
                 if (pass.isNotEmpty()) {
-                    if (pass.length < 6) {
-                        Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres",
-                            Toast.LENGTH_SHORT).show()
-                        return@setPositiveButton
-                    }
+                    if (pass.length < 6) { Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show(); return@setPositiveButton }
                     mostrarCarga(true)
-                    FunctionsHelper.call(
-                        functionName = "actualizarPassword",
-                        data = mapOf("uid" to uid, "password" to pass),
-                        onSuccess = {
-                            mainHandler.post {
-                                mostrarCarga(false)
-                                Toast.makeText(this, "Contraseña actualizada", Toast.LENGTH_SHORT).show()
-                            }
-                        },
-                        onFailure = { error ->
-                            mainHandler.post {
-                                mostrarCarga(false)
-                                Toast.makeText(this, "Error al cambiar contraseña: $error",
-                                    Toast.LENGTH_LONG).show()
-                            }
-                        }
+                    FunctionsHelper.call("actualizarPassword", mapOf("uid" to uid, "password" to pass),
+                        onSuccess = { mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Contraseña actualizada", Toast.LENGTH_SHORT).show() } },
+                        onFailure = { error -> mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show() } }
                     )
                 }
             }
@@ -218,29 +193,15 @@ class HomeEmpresaActivity : AppCompatActivity() {
             .show()
     }
 
-    // ── Eliminar admin ────────────────────────────────────────────────────────
-
     private fun confirmarEliminar(admin: User) {
         AlertDialog.Builder(this)
             .setTitle("Eliminar administrador")
             .setMessage("¿Seguro que deseas eliminar a ${admin.name}?")
             .setPositiveButton("Eliminar") { _, _ ->
                 mostrarCarga(true)
-                FunctionsHelper.call(
-                    functionName = "eliminarUsuario",
-                    data = mapOf("uid" to (admin.uid ?: "")),
-                    onSuccess = {
-                        mainHandler.post {
-                            mostrarCarga(false)
-                            Toast.makeText(this, "Administrador eliminado", Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                    onFailure = { error ->
-                        mainHandler.post {
-                            mostrarCarga(false)
-                            Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show()
-                        }
-                    }
+                FunctionsHelper.call("eliminarUsuario", mapOf("uid" to (admin.uid ?: "")),
+                    onSuccess = { mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Administrador eliminado", Toast.LENGTH_SHORT).show() } },
+                    onFailure = { error -> mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show() } }
                 )
             }
             .setNegativeButton("Cancelar", null)

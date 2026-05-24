@@ -40,7 +40,8 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
     private val puntosList = mutableListOf<PuntoRuta>()
 
     private val busesActivos = mutableMapOf<String, LatLng>()
-    private val nombresConductores = mutableMapOf<String, String>()
+    // Ahora guardamos la PLACA del bus en lugar del nombre del conductor
+    private val placasBuses = mutableMapOf<String, String>()
     private val busMarkers = mutableMapOf<String, Marker>()
     private val paraderoMarkers = mutableMapOf<String, Marker>()
 
@@ -51,7 +52,6 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
     private var mapaListo = false
     private var puntosListos = false
 
-    // Paradero actualmente seleccionado (null = el más cercano automático)
     private var paraderoSeleccionado: PuntoRuta? = null
     private var polylineWalking: Polyline? = null
 
@@ -122,7 +122,6 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap.isMyLocationEnabled = true
         }
 
-        // Click en un marcador de paradero → seleccionar ese paradero
         mMap.setOnMarkerClickListener { marker ->
             val paradero = puntosList.find { it.nombre == marker.title }
             if (paradero != null) {
@@ -134,7 +133,6 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
-        // Click en el mapa (zona vacía) → volver al paradero automático
         mMap.setOnMapClickListener {
             seleccionarParadero(null, porUsuario = false)
         }
@@ -196,22 +194,15 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
             })
     }
 
-    /**
-     * Selecciona un paradero específico (toque del usuario) o lo limpia (volver al automático).
-     * porUsuario = true  → el usuario tocó un paradero → fija la selección
-     * porUsuario = false → toque en mapa vacío → vuelve al más cercano automático
-     */
     private fun seleccionarParadero(paradero: PuntoRuta?, porUsuario: Boolean) {
         paraderoSeleccionado = paradero
 
         if (!porUsuario || paradero == null) {
-            // Restaurar hint y recalcular automáticamente
             tvHintParadero.text = "💡 Toca un paradero en el mapa para ver su info"
             actualizarPanelCompleto()
             return
         }
 
-        // Actualizar UI con el paradero seleccionado manualmente
         tvHintParadero.text = "📌 ${paradero.nombre} seleccionado · Toca el mapa para volver al automático"
 
         val pasajero = locationPasajero
@@ -238,11 +229,8 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                         PolylineOptions()
                             .addAll(puntosRuta)
                             .color(android.graphics.Color.parseColor("#FF6B00"))
-                            .width(12f)                           // más grueso y visible
-                            .pattern(listOf(
-                                Dot(),
-                                Gap(16f)                          // puntos más espaciados
-                            ))
+                            .width(12f)
+                            .pattern(listOf(Dot(), Gap(16f)))
                             .jointType(JointType.ROUND)
                     )
                 }
@@ -254,29 +242,36 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
         busListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 busesActivos.clear()
-                nombresConductores.clear()
+                placasBuses.clear()
 
                 for (conductorSnap in snapshot.children) {
                     val uid    = conductorSnap.key ?: continue
                     val lat    = conductorSnap.child("latitud").getValue(Double::class.java)
                     val lng    = conductorSnap.child("longitud").getValue(Double::class.java)
-                    val nombre = conductorSnap.child("conductorNombre").getValue(String::class.java) ?: "Conductor"
                     val activo = conductorSnap.child("activo").getValue(Boolean::class.java) ?: false
 
                     if (lat != null && lng != null && activo) {
                         val ll = LatLng(lat, lng)
                         busesActivos[uid] = ll
-                        nombresConductores[uid] = nombre
+
+                        // Leer la placa del bus desde el perfil del conductor en /users
+                        db.child("users").child(uid).child("busPlaca").get()
+                            .addOnSuccessListener { placaSnap ->
+                                val placa = placaSnap.getValue(String::class.java)
+                                placasBuses[uid] = if (!placa.isNullOrEmpty()) placa else "Sin placa"
+                                actualizarPanelCompleto()
+                            }
 
                         if (busMarkers.containsKey(uid)) {
                             busMarkers[uid]?.position = ll
                         } else {
                             val bitmap      = BitmapFactory.decodeResource(resources, R.drawable.buslogo)
                             val smallMarker = Bitmap.createScaledBitmap(bitmap, 80, 80, false)
+                            val placa       = placasBuses[uid] ?: "Bus"
                             val marker = mMap.addMarker(
                                 MarkerOptions()
                                     .position(ll)
-                                    .title("Bus: $nombre")
+                                    .title("🚌 $placa")
                                     .icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
                             )
                             if (marker != null) busMarkers[uid] = marker
@@ -287,6 +282,7 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
 
+                // Limpiar marcadores de buses que ya no están
                 val uidsActuales = snapshot.children.map { it.key }
                 busMarkers.keys.toList().forEach { uid ->
                     if (!uidsActuales.contains(uid)) {
@@ -296,9 +292,9 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 if (busesActivos.isEmpty()) {
-                    tvEstadoBusMapa.text          = "🔴 Bus no disponible"
-                    tvTiempoEstimadoMapa.text     = "Sin información"
-                    tvInfoConductorMapa.text      = "No hay recorrido activo"
+                    tvEstadoBusMapa.text      = "🔴 Bus no disponible"
+                    tvTiempoEstimadoMapa.text = "Sin información"
+                    tvInfoConductorMapa.text  = "No hay recorrido activo"
                 } else {
                     tvEstadoBusMapa.text = "🟢 ${busesActivos.size} bus(es) en servicio"
                     actualizarPanelCompleto()
@@ -321,7 +317,6 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
 
-        // Si el usuario seleccionó un paradero manualmente, respetar esa selección
         val paraderoObjetivo = paraderoSeleccionado ?: encontrarParaderoCercano(pasajero)
         paraderoObjetivo ?: return
 
@@ -344,7 +339,6 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
         return paraderoMasCercano
     }
 
-    /** Actualiza el nombre del paradero y el tiempo caminando */
     private fun actualizarInfoParadero(paradero: PuntoRuta, pasajero: Location) {
         val res = FloatArray(1)
         Location.distanceBetween(pasajero.latitude, pasajero.longitude, paradero.latitud, paradero.longitud, res)
@@ -357,7 +351,6 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
 
         tvParaderoMasCercanoMapa.text = "📍 ${paradero.nombre} ($distTexto)"
 
-        // Tiempo caminando: velocidad promedio peatonal ~83 m/min (5 km/h)
         val minutosCaminando = (distanciaM / 83f).toInt()
         tvTiempoWalkingMapa.text = when {
             minutosCaminando <= 0 -> "Ya estás aquí"
@@ -370,7 +363,6 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    /** Actualiza el tiempo estimado de llegada del bus al paradero */
     private fun actualizarTiempoBus(paradero: PuntoRuta) {
         if (busesActivos.isEmpty()) {
             tvTiempoEstimadoMapa.text = "Bus no activo"
@@ -379,19 +371,25 @@ class MapaRutaEnVivoActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         var menorTiempoMin = Int.MAX_VALUE
-        var nombreBusMasCercano = ""
+        var placaBusMasCercano = ""
 
         busesActivos.forEach { (uid, busPos) ->
             val distanciaMetros = calcularDistanciaRuta(busPos, paradero)
-            val velocidadMpMin  = 20000f / 60f  // 20 km/h en zonas urbanas
+            val velocidadMpMin  = 20000f / 60f
             val minutos         = (distanciaMetros / velocidadMpMin).toInt()
             if (minutos < menorTiempoMin) {
                 menorTiempoMin      = minutos
-                nombreBusMasCercano = nombresConductores[uid] ?: "Conductor"
+                // Mostrar placa del bus en lugar del nombre del conductor
+                placaBusMasCercano = placasBuses[uid] ?: "Sin placa"
             }
         }
 
-        tvInfoConductorMapa.text = "Conductor: $nombreBusMasCercano"
+        // Placa del bus en lugar de nombre del conductor
+        tvInfoConductorMapa.text = if (placaBusMasCercano.isNotEmpty())
+            "🚌 Placa: $placaBusMasCercano"
+        else
+            ""
+
         tvTiempoEstimadoMapa.text = when {
             menorTiempoMin <= 0 -> "Llegando ahora 🚌"
             menorTiempoMin == 1 -> "~1 min"

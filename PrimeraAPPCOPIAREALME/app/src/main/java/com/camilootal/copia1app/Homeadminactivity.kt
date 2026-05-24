@@ -29,6 +29,10 @@ class HomeAdminActivity : AppCompatActivity() {
 
     private var empresaId: String? = null
 
+    // ── Guardar referencia para poder remover en onDestroy ────────────────────
+    private var conductoresListener: ValueEventListener? = null
+    private var conductoresQuery: Query? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_admin)
@@ -62,11 +66,7 @@ class HomeAdminActivity : AppCompatActivity() {
         btnAgregarConductor.setOnClickListener { mostrarDialogoCrear() }
         btnIrCrearRuta.setOnClickListener { startActivity(Intent(this, HomeAdminRutasActivity::class.java)) }
         btnAsignarBuses.setOnClickListener { startActivity(Intent(this, AsignarBusConductorActivity::class.java)) }
-        btnCerrarSesion.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            startActivity(Intent(this, LogIn::class.java))
-            finishAffinity()
-        }
+        btnCerrarSesion.setOnClickListener { cerrarSesion() }
 
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         db.child("users").child(uid).child("empresaId").get()
@@ -77,14 +77,20 @@ class HomeAdminActivity : AppCompatActivity() {
             .addOnFailureListener { cargarConductores() }
     }
 
-    private fun cargarConductores() {
-        val query: Query = if (!empresaId.isNullOrEmpty()) {
-            db.child("users").orderByChild("empresaId").equalTo(empresaId)
-        } else {
-            db.child("users").orderByChild("role").equalTo(User.ROL_CONDUCTOR)
-        }
+    private fun cerrarSesion() {
+        desconectarListeners()
+        FirebaseAuth.getInstance().signOut()
+        startActivity(Intent(this, LogIn::class.java))
+        finishAffinity()
+    }
 
-        query.addValueEventListener(object : ValueEventListener {
+    private fun cargarConductores() {
+        val query: Query = if (!empresaId.isNullOrEmpty())
+            db.child("users").orderByChild("empresaId").equalTo(empresaId)
+        else
+            db.child("users").orderByChild("role").equalTo(User.ROL_CONDUCTOR)
+
+        val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 listaConductores.clear()
                 for (child in snapshot.children) {
@@ -94,12 +100,27 @@ class HomeAdminActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
             }
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@HomeAdminActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                if (FirebaseAuth.getInstance().currentUser != null) {
+                    Toast.makeText(this@HomeAdminActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
             }
-        })
+        }
+
+        conductoresQuery    = query
+        conductoresListener = listener
+        query.addValueEventListener(listener)
     }
 
-    // ── Crear: usa dialog_crear_conductor.xml (sin campo placa) ──────────────
+    private fun desconectarListeners() {
+        conductoresListener?.let { conductoresQuery?.removeEventListener(it) }
+        conductoresListener = null
+        conductoresQuery    = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        desconectarListeners()
+    }
 
     private fun mostrarDialogoCrear() {
         val view      = layoutInflater.inflate(R.layout.dialog_crear_conductor, null)
@@ -116,22 +137,14 @@ class HomeAdminActivity : AppCompatActivity() {
                 val email  = edtEmail.text.toString().trim()
                 val pass   = edtPass.text.toString().trim()
                 val phone  = edtPhone.text.toString().trim()
-
                 if (nombre.isEmpty() || email.isEmpty() || pass.isEmpty()) {
                     Toast.makeText(this, "Nombre, email y contraseña son obligatorios", Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
-
                 mostrarCarga(true)
-                val data = mutableMapOf<String, Any>(
-                    "nombre" to nombre, "email" to email,
-                    "password" to pass, "phone" to phone, "placa" to ""
-                )
+                val data = mutableMapOf<String, Any>("nombre" to nombre, "email" to email, "password" to pass, "phone" to phone, "placa" to "")
                 if (!empresaId.isNullOrEmpty()) data["empresaId"] = empresaId!!
-
-                FunctionsHelper.call(
-                    functionName = "crearConductor",
-                    data = data,
+                FunctionsHelper.call("crearConductor", data,
                     onSuccess = { mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Conductor creado", Toast.LENGTH_SHORT).show() } },
                     onFailure = { error -> mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show() } }
                 )
@@ -140,28 +153,19 @@ class HomeAdminActivity : AppCompatActivity() {
             .show()
     }
 
-    // ── Editar: usa dialog_editar_conductor.xml (sin placa, con info del bus) ─
-
     private fun mostrarDialogoEditar(conductor: User) {
-        val view        = layoutInflater.inflate(R.layout.dialog_editar_conductor, null)
-        val tvBusInfo   = view.findViewById<TextView>(R.id.tvBusAsignadoInfo)
-        val edtNombre   = view.findViewById<EditText>(R.id.edtNombreConductor)
-        val edtEmail    = view.findViewById<EditText>(R.id.edtEmailConductor)
-        val edtPass     = view.findViewById<EditText>(R.id.edtPasswordConductor)
-        val edtPhone    = view.findViewById<EditText>(R.id.edtPhoneConductor)
+        val view      = layoutInflater.inflate(R.layout.dialog_editar_conductor, null)
+        val tvBusInfo = view.findViewById<TextView>(R.id.tvBusAsignadoInfo)
+        val edtNombre = view.findViewById<EditText>(R.id.edtNombreConductor)
+        val edtEmail  = view.findViewById<EditText>(R.id.edtEmailConductor)
+        val edtPass   = view.findViewById<EditText>(R.id.edtPasswordConductor)
+        val edtPhone  = view.findViewById<EditText>(R.id.edtPhoneConductor)
 
-        // Mostrar info del bus asignado (solo lectura)
         tvBusInfo.text = when {
-            !conductor.busPlaca.isNullOrEmpty() && !conductor.busModelo.isNullOrEmpty() ->
-                "🚌 Bus asignado: ${conductor.busPlaca} — ${conductor.busModelo}"
-            !conductor.busPlaca.isNullOrEmpty() ->
-                "🚌 Bus asignado: ${conductor.busPlaca}"
-            !conductor.busAsignado.isNullOrEmpty() ->
-                "🚌 Bus asignado (sin placa registrada)"
-            else ->
-                "🚌 Sin bus asignado"
+            !conductor.busPlaca.isNullOrEmpty() -> "🚌 Bus: ${conductor.busPlaca} — ${conductor.busModelo ?: ""}"
+            !conductor.busAsignado.isNullOrEmpty() -> "🚌 Bus asignado (sin placa)"
+            else -> "🚌 Sin bus asignado"
         }
-
         edtNombre.setText(conductor.name)
         edtEmail.setText(conductor.email)
         edtPhone.setText(conductor.phone)
@@ -174,31 +178,16 @@ class HomeAdminActivity : AppCompatActivity() {
                 val nombre = edtNombre.text.toString().trim()
                 val phone  = edtPhone.text.toString().trim()
                 val pass   = edtPass.text.toString().trim()
-
-                if (nombre.isEmpty()) {
-                    Toast.makeText(this, "El nombre no puede estar vacío", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
-
-                db.child("users").child(uid).updateChildren(
-                    mapOf("name" to nombre, "phone" to phone)
-                )
-
+                if (nombre.isEmpty()) { Toast.makeText(this, "El nombre no puede estar vacío", Toast.LENGTH_SHORT).show(); return@setPositiveButton }
+                db.child("users").child(uid).updateChildren(mapOf("name" to nombre, "phone" to phone))
                 if (pass.isNotEmpty()) {
-                    if (pass.length < 6) {
-                        Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show()
-                        return@setPositiveButton
-                    }
+                    if (pass.length < 6) { Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show(); return@setPositiveButton }
                     mostrarCarga(true)
-                    FunctionsHelper.call(
-                        functionName = "actualizarPassword",
-                        data = mapOf("uid" to uid, "password" to pass),
+                    FunctionsHelper.call("actualizarPassword", mapOf("uid" to uid, "password" to pass),
                         onSuccess = { mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Contraseña actualizada", Toast.LENGTH_SHORT).show() } },
                         onFailure = { error -> mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show() } }
                     )
-                } else {
-                    Toast.makeText(this, "Conductor actualizado", Toast.LENGTH_SHORT).show()
-                }
+                } else Toast.makeText(this, "Conductor actualizado", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("Cancelar", null)
             .show()
@@ -210,9 +199,7 @@ class HomeAdminActivity : AppCompatActivity() {
             .setMessage("¿Seguro que deseas eliminar a ${conductor.name}?")
             .setPositiveButton("Eliminar") { _, _ ->
                 mostrarCarga(true)
-                FunctionsHelper.call(
-                    functionName = "eliminarUsuario",
-                    data = mapOf("uid" to (conductor.uid ?: "")),
+                FunctionsHelper.call("eliminarUsuario", mapOf("uid" to (conductor.uid ?: "")),
                     onSuccess = { mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Conductor eliminado", Toast.LENGTH_SHORT).show() } },
                     onFailure = { error -> mainHandler.post { mostrarCarga(false); Toast.makeText(this, "Error: $error", Toast.LENGTH_LONG).show() } }
                 )

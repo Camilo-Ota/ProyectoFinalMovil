@@ -25,6 +25,12 @@ class AsignarBusConductorActivity : AppCompatActivity() {
 
     private var empresaId = ""
 
+    // ── Guardar referencias de listeners ──────────────────────────────────────
+    private var busesListener: ValueEventListener? = null
+    private var busesQuery: Query? = null
+    private var conductoresListener: ValueEventListener? = null
+    private var conductoresQuery: Query? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_asignar_bus)
@@ -51,70 +57,81 @@ class AsignarBusConductorActivity : AppCompatActivity() {
             }
     }
 
-    // ── Carga en tiempo real de buses Y conductores ───────────────────────────
-
     private fun cargarDatos() {
         progressBar.visibility = View.VISIBLE
 
-        // Buses: escuchar en tiempo real para reflejar cambios de asignación
-        db.child("buses")
-            .orderByChild("empresaId")
-            .equalTo(empresaId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snap: DataSnapshot) {
-                    listaBuses.clear()
-                    for (s in snap.children) {
-                        val bus = s.getValue(Bus::class.java) ?: continue
-                        bus.id = s.key ?: continue
-                        listaBuses.add(bus)
-                    }
-                    adapter.notifyDataSetChanged()
+        // Buses en tiempo real
+        val qBuses = db.child("buses").orderByChild("empresaId").equalTo(empresaId)
+        val lBuses = object : ValueEventListener {
+            override fun onDataChange(snap: DataSnapshot) {
+                listaBuses.clear()
+                for (s in snap.children) {
+                    val bus = s.getValue(Bus::class.java) ?: continue
+                    bus.id = s.key ?: continue
+                    listaBuses.add(bus)
                 }
-                override fun onCancelled(e: DatabaseError) {}
-            })
+                adapter.notifyDataSetChanged()
+            }
+            override fun onCancelled(e: DatabaseError) {
+                if (FirebaseAuth.getInstance().currentUser != null)
+                    Toast.makeText(this@AsignarBusConductorActivity, "Error buses: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+        busesQuery    = qBuses
+        busesListener = lBuses
+        qBuses.addValueEventListener(lBuses)
 
-        // Conductores: también en tiempo real
-        db.child("users")
-            .orderByChild("empresaId")
-            .equalTo(empresaId)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snap: DataSnapshot) {
-                    listaConductores.clear()
-                    for (s in snap.children) {
-                        val user = s.getValue(User::class.java) ?: continue
-                        if (user.role == User.ROL_CONDUCTOR) listaConductores.add(user)
-                    }
-                    listaConductores.sortBy { it.name }
-                    adapter.notifyDataSetChanged()
-                    progressBar.visibility   = View.GONE
-                    tvSinConductores.visibility =
-                        if (listaConductores.isEmpty()) View.VISIBLE else View.GONE
+        // Conductores en tiempo real
+        val qConductores = db.child("users").orderByChild("empresaId").equalTo(empresaId)
+        val lConductores = object : ValueEventListener {
+            override fun onDataChange(snap: DataSnapshot) {
+                listaConductores.clear()
+                for (s in snap.children) {
+                    val user = s.getValue(User::class.java) ?: continue
+                    if (user.role == User.ROL_CONDUCTOR) listaConductores.add(user)
                 }
-                override fun onCancelled(e: DatabaseError) {
-                    progressBar.visibility = View.GONE
-                    Toast.makeText(this@AsignarBusConductorActivity,
-                        "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
+                listaConductores.sortBy { it.name }
+                adapter.notifyDataSetChanged()
+                progressBar.visibility   = View.GONE
+                tvSinConductores.visibility = if (listaConductores.isEmpty()) View.VISIBLE else View.GONE
+            }
+            override fun onCancelled(e: DatabaseError) {
+                progressBar.visibility = View.GONE
+                if (FirebaseAuth.getInstance().currentUser != null)
+                    Toast.makeText(this@AsignarBusConductorActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+        conductoresQuery    = qConductores
+        conductoresListener = lConductores
+        qConductores.addValueEventListener(lConductores)
     }
 
-    // ── Diálogo de asignación mejorado ────────────────────────────────────────
+    private fun desconectarListeners() {
+        busesListener?.let       { busesQuery?.removeEventListener(it) }
+        conductoresListener?.let { conductoresQuery?.removeEventListener(it) }
+        busesListener       = null; busesQuery       = null
+        conductoresListener = null; conductoresQuery = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        desconectarListeners()
+    }
 
     private fun mostrarDialogoAsignar(conductor: User) {
         val busesDisponibles = listaBuses.filter {
             it.estado != Bus.ESTADO_MANTENIMIENTO &&
-                    (it.conductorId.isNullOrEmpty() || it.conductorId == conductor.uid)
+            (it.conductorId.isNullOrEmpty() || it.conductorId == conductor.uid)
         }
 
         if (busesDisponibles.isEmpty()) {
-            mostrarDialogoError(
-                titulo  = "Sin buses disponibles",
-                mensaje = "Todos los buses están asignados o en mantenimiento.\nRevisa el estado de la flota en la sección Gestionar Buses."
-            )
+            AlertDialog.Builder(this)
+                .setTitle("⚠️ Sin buses disponibles")
+                .setMessage("Todos los buses están asignados o en mantenimiento.\nRevisa el estado de la flota en Gestionar Buses.")
+                .setPositiveButton("Entendido", null).show()
             return
         }
 
-        // Layout personalizado del diálogo
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_seleccionar_bus, null)
         val tvTitulo   = dialogView.findViewById<TextView>(R.id.tvTituloDialogBus)
         val rvBuses    = dialogView.findViewById<RecyclerView>(R.id.rvBusesDialogo)
@@ -122,16 +139,12 @@ class AsignarBusConductorActivity : AppCompatActivity() {
         tvTitulo.text = "Asignar bus a ${conductor.name}"
         rvBuses.layoutManager = LinearLayoutManager(this)
 
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setNegativeButton("Cancelar", null)
-            .create()
+        val dialog = AlertDialog.Builder(this).setView(dialogView).setNegativeButton("Cancelar", null).create()
 
         rvBuses.adapter = BusSeleccionAdapter(busesDisponibles, conductor.uid) { busElegido ->
             dialog.dismiss()
             realizarAsignacion(conductor, busElegido)
         }
-
         dialog.show()
     }
 
@@ -139,43 +152,36 @@ class AsignarBusConductorActivity : AppCompatActivity() {
         val conductorUid = conductor.uid ?: return
         progressBar.visibility = View.VISIBLE
 
-        // Liberar bus anterior si tenía uno distinto
-        val busAnteriorId = conductor.busAsignado
-        if (!busAnteriorId.isNullOrEmpty() && busAnteriorId != bus.id) {
-            db.child("buses").child(busAnteriorId).updateChildren(mapOf(
-                "conductorId"     to null,
-                "conductorNombre" to null
-            ))
+        val busAnterior = listaBuses.find { it.conductorId == conductorUid }
+        val updates = mutableMapOf<String, Any?>()
+
+        if (busAnterior != null && busAnterior.id != bus.id) {
+            updates["buses/${busAnterior.id}/conductorId"]     = null
+            updates["buses/${busAnterior.id}/conductorNombre"] = null
         }
+        updates["buses/${bus.id}/conductorId"]          = conductorUid
+        updates["buses/${bus.id}/conductorNombre"]       = conductor.name ?: ""
+        updates["users/${conductorUid}/busAsignado"]     = bus.id
+        updates["users/${conductorUid}/busPlaca"]        = bus.placa
+        updates["users/${conductorUid}/busModelo"]       = bus.modelo
 
-        val updates = mapOf(
-            "buses/${bus.id}/conductorId"                to conductorUid,
-            "buses/${bus.id}/conductorNombre"            to (conductor.name ?: ""),
-            "users/${conductorUid}/busAsignado"          to bus.id,
-            "users/${conductorUid}/busPlaca"             to bus.placa,
-            "users/${conductorUid}/busModelo"            to bus.modelo
-        )
-
-        // Escritura atómica: todo o nada
         db.updateChildren(updates)
             .addOnSuccessListener {
                 progressBar.visibility = View.GONE
-                mostrarDialogoExito("Bus asignado", "✅ El bus ${bus.placa} (${bus.modelo}) fue asignado a ${conductor.name} correctamente.")
+                AlertDialog.Builder(this)
+                    .setTitle("✅ Bus asignado")
+                    .setMessage("El bus ${bus.placa} (${bus.modelo}) fue asignado a ${conductor.name} correctamente.")
+                    .setPositiveButton("Aceptar", null).show()
             }
             .addOnFailureListener { e ->
                 progressBar.visibility = View.GONE
-                mostrarDialogoError("Error al asignar", e.message ?: "Error desconocido")
+                AlertDialog.Builder(this).setTitle("⚠️ Error").setMessage(e.message ?: "Error desconocido").setPositiveButton("Entendido", null).show()
             }
     }
 
-    // ── Desasignar ────────────────────────────────────────────────────────────
-
     private fun desasignarBus(conductor: User) {
         val conductorUid = conductor.uid ?: return
-
-        // FIX: buscar el bus asignado directamente en listaBuses
-        // (no depender de conductor.busAsignado que puede no estar hidratado)
-        val busAsignado = listaBuses.find { it.conductorId == conductorUid }
+        val busAsignado  = listaBuses.find { it.conductorId == conductorUid }
 
         if (busAsignado == null) {
             Toast.makeText(this, "Este conductor no tiene bus asignado", Toast.LENGTH_SHORT).show()
@@ -187,51 +193,27 @@ class AsignarBusConductorActivity : AppCompatActivity() {
             .setMessage("¿Quitar el bus ${busAsignado.placa} (${busAsignado.modelo}) a ${conductor.name}?")
             .setPositiveButton("Desasignar") { _, _ ->
                 progressBar.visibility = View.VISIBLE
-
-                // Escritura atómica
-                val updates = mapOf(
-                    "buses/${busAsignado.id}/conductorId"        to null,
-                    "buses/${busAsignado.id}/conductorNombre"    to null,
-                    "users/${conductorUid}/busAsignado"          to null,
-                    "users/${conductorUid}/busPlaca"             to null,
-                    "users/${conductorUid}/busModelo"            to null
+                val updates = mapOf<String, Any?>(
+                    "buses/${busAsignado.id}/conductorId"     to null,
+                    "buses/${busAsignado.id}/conductorNombre" to null,
+                    "users/${conductorUid}/busAsignado"       to null,
+                    "users/${conductorUid}/busPlaca"          to null,
+                    "users/${conductorUid}/busModelo"         to null
                 )
-
                 db.updateChildren(updates)
                     .addOnSuccessListener {
                         progressBar.visibility = View.GONE
-                        // La vista se actualiza sola por el ValueEventListener en tiempo real
                         Toast.makeText(this, "✅ Bus desasignado correctamente", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener { e ->
                         progressBar.visibility = View.GONE
-                        mostrarDialogoError("Error al desasignar", e.message ?: "Error desconocido")
+                        AlertDialog.Builder(this).setTitle("⚠️ Error").setMessage(e.message).setPositiveButton("Entendido", null).show()
                     }
             }
             .setNegativeButton("Cancelar", null)
             .show()
     }
-
-    // ── Diálogos de feedback ──────────────────────────────────────────────────
-
-    private fun mostrarDialogoExito(titulo: String, mensaje: String) {
-        AlertDialog.Builder(this)
-            .setTitle(titulo)
-            .setMessage(mensaje)
-            .setPositiveButton("Aceptar", null)
-            .show()
-    }
-
-    private fun mostrarDialogoError(titulo: String, mensaje: String) {
-        AlertDialog.Builder(this)
-            .setTitle("⚠️ $titulo")
-            .setMessage(mensaje)
-            .setPositiveButton("Entendido", null)
-            .show()
-    }
 }
-
-// ── Adapter inline para el diálogo de selección de bus ───────────────────────
 
 class BusSeleccionAdapter(
     private val buses: List<Bus>,
@@ -241,36 +223,22 @@ class BusSeleccionAdapter(
 
     inner class VH(val view: View) : RecyclerView.ViewHolder(view)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_bus_seleccion, parent, false)
-        return VH(v)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH =
+        VH(LayoutInflater.from(parent.context).inflate(R.layout.item_bus_seleccion, parent, false))
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        val bus = buses[position]
+        val bus     = buses[position]
         val esActual = bus.conductorId == conductorUidActual
 
         holder.view.findViewById<TextView>(R.id.tvPlacaSeleccion).text  = bus.placa
         holder.view.findViewById<TextView>(R.id.tvModeloSeleccion).text = bus.modelo
         holder.view.findViewById<TextView>(R.id.tvCapSeleccion).text    = "Cap: ${bus.capacidad} pasajeros"
+        holder.view.findViewById<TextView>(R.id.tvEstadoSeleccion).text = if (bus.estado == Bus.ESTADO_EN_RUTA) "🟡 En ruta" else "🟢 Disponible"
 
-        val tvEstado = holder.view.findViewById<TextView>(R.id.tvEstadoSeleccion)
-        val badge    = holder.view.findViewById<TextView>(R.id.tvBadgeActual)
-        val card     = holder.view.findViewById<CardView>(R.id.cardBusSeleccion)
-
-        tvEstado.text = when (bus.estado) {
-            Bus.ESTADO_EN_RUTA -> "🟡 En ruta"
-            else               -> "🟢 Disponible"
-        }
-
-        if (esActual) {
-            badge.visibility = View.VISIBLE
-            card.setCardBackgroundColor(Color.parseColor("#E3F2FD"))
-        } else {
-            badge.visibility = View.GONE
-            card.setCardBackgroundColor(Color.WHITE)
-        }
+        val badge = holder.view.findViewById<TextView>(R.id.tvBadgeActual)
+        val card  = holder.view.findViewById<CardView>(R.id.cardBusSeleccion)
+        badge.visibility = if (esActual) View.VISIBLE else View.GONE
+        card.setCardBackgroundColor(if (esActual) Color.parseColor("#E3F2FD") else Color.WHITE)
 
         holder.view.setOnClickListener { onSeleccionar(bus) }
     }

@@ -3,13 +3,12 @@ package com.camilootal.copia1app
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class HomeRutasActivity : AppCompatActivity() {
-
-    // El conductor solo puede: iniciar recorrido, historial, sus datos y chat.
-    // Crear rutas y configurar puntos son tareas del administrador.
 
     private lateinit var btnIrIniciarRecorrido: Button
     private lateinit var btnIrHistorialRecorridos: Button
@@ -19,25 +18,23 @@ class HomeRutasActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // ── Verificar que sea conductor o administrador antes de continuar ──
         RoleGuard.verificar(this, User.ROL_CONDUCTOR, User.ROL_ADMINISTRADOR) {
             iniciarUI()
         }
     }
 
     private fun iniciarUI() {
-        setContentView(R.layout.activity_home_conductor)  // nuevo layout (ver XML abajo)
+        setContentView(R.layout.activity_home_conductor)
 
-        btnIrIniciarRecorrido   = findViewById(R.id.btnIrIniciarRecorrido)
+        btnIrIniciarRecorrido    = findViewById(R.id.btnIrIniciarRecorrido)
         btnIrHistorialRecorridos = findViewById(R.id.btnIrHistorialRecorridos)
-        btnIrDatosUsuario       = findViewById(R.id.btnIrDatosUsuario)
-        btnIrBlogConductores    = findViewById(R.id.btnIrBlogConductores)
-        btnCerrarSesion         = findViewById(R.id.btnCerrarSesionConductor)
+        btnIrDatosUsuario        = findViewById(R.id.btnIrDatosUsuario)
+        btnIrBlogConductores     = findViewById(R.id.btnIrBlogConductores)
+        btnCerrarSesion          = findViewById(R.id.btnCerrarSesionConductor)
 
-        btnIrIniciarRecorrido.setOnClickListener {
-            startActivity(Intent(this, ListaRutasRecorridoActivity::class.java))
-        }
+        // Verificar si tiene bus asignado antes de permitir iniciar recorrido
+        btnIrIniciarRecorrido.setOnClickListener { verificarBusYNavegar() }
+
         btnIrHistorialRecorridos.setOnClickListener {
             startActivity(Intent(this, HistorialRecorridosActivity::class.java))
         }
@@ -52,6 +49,33 @@ class HomeRutasActivity : AppCompatActivity() {
             startActivity(Intent(this, LogIn::class.java))
             finishAffinity()
         }
+    }
+
+    /**
+     * Consulta Firebase para verificar si el conductor tiene un bus asignado.
+     * Si no tiene bus, muestra un mensaje y bloquea el acceso a los recorridos.
+     */
+    private fun verificarBusYNavegar() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        FirebaseDatabase.getInstance().reference
+            .child("users").child(uid).child("busAsignado")
+            .get()
+            .addOnSuccessListener { snap ->
+                val busAsignado = snap.getValue(String::class.java)
+                if (busAsignado.isNullOrEmpty()) {
+                    Toast.makeText(
+                        this,
+                        "⚠️ No tienes un bus asignado. Contacta a tu administrador para que te asigne uno antes de iniciar un recorrido.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    startActivity(Intent(this, ListaRutasRecorridoActivity::class.java))
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al verificar bus asignado. Intenta de nuevo.", Toast.LENGTH_SHORT).show()
+            }
     }
 
     override fun onBackPressed() {
