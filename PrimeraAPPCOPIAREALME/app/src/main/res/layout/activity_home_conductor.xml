@@ -269,7 +269,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- LOGOUT -->
+        <!-- LOGOUT== -->
         <Button
             android:id="@+id/btnCerrarSesionConductor"
             android:layout_width="match_parent"
