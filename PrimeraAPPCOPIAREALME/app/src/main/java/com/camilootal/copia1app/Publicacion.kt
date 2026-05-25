@@ -8,5 +8,9 @@ data class Publicacion(
     var autorNombre: String = "",      // Nombre del conductor para mostrar
     var texto: String = "",            // Contenido de la publicación
     var categoria: String = "General", // "Alerta" | "Trancón" | "Info" | "General"
-    var timestamp: Long = 0L           // System.currentTimeMillis() al publicar
+    var timestamp: Long = 0L,          // System.currentTimeMillis() al publicar
+    // ── Ubicación donde se hizo la publicación ──────────────────────────────
+    var latitud: Double = 0.0,         // Latitud GPS del conductor al publicar
+    var longitud: Double = 0.0,        // Longitud GPS del conductor al publicar
+    var tieneUbicacion: Boolean = false // true solo si se capturó GPS al publicar
 )

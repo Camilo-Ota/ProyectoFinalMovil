@@ -19,6 +19,9 @@
         android:theme="@style/Theme.Copia1APP"
         tools:targetApi="31">
         <activity
+            android:name=".MapaAlertaActivity"
+            android:exported="false" />
+        <activity
             android:name=".NavegacionConductorActivity"
             android:exported="false" />
         <activity
@@ -42,16 +45,12 @@
         <activity
             android:name=".CanalConductoresActivity"
             android:exported="false" />
-
-        <activity android:name=".GestionBusesActivity"
+        <activity
+            android:name=".GestionBusesActivity"
             android:exported="false" />
-
-        <activity android:name=".AsignarBusConductorActivity"
-            android:exported="false" />
-
-
-
-        <!-- ── Empresa de Transporte ─────────────────────────────── -->
+        <activity
+            android:name=".AsignarBusConductorActivity"
+            android:exported="false" /> <!-- ── Empresa de Transporte ─────────────────────────────── -->
         <activity
             android:name=".HomeEmpresaActivity"
             android:exported="false" /> <!-- ── Administrador ──────────────────────────────────────── -->

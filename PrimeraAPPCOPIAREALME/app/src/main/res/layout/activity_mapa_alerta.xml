@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <!-- MAPA - ocupa toda la pantalla -->
+    <fragment
+        android:id="@+id/mapFragmentAlerta"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- BOTÓN VOLVER (esquina superior izquierda) -->
+    <ImageButton
+        android:id="@+id/btnVolverAlerta"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_gravity="top|start"
+        android:layout_margin="16dp"
+        android:background="@drawable/bin_redondo_blanco"
+        android:src="@android:drawable/ic_media_previous"
+        android:scaleType="centerInside"
+        android:contentDescription="Volver"
+        android:elevation="8dp" />
+
+    <!-- TARJETA INFERIOR con info de la alerta -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:background="@drawable/card_background"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="18dp"
+        android:paddingBottom="24dp"
+        android:elevation="10dp">
+
+        <!-- Fila: categoría badge + nombre autor -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/tvCategoriaAlerta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alerta"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginEnd="10dp" />
+
+            <TextView
+                android:id="@+id/tvAutorAlerta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Conductor"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/tvHoraAlerta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--:--"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary" />
+        </LinearLayout>
+
+        <!-- Texto de la publicación -->
+        <TextView
+            android:id="@+id/tvTextoAlerta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descripción de la alerta"
+            android:textSize="14sp"
+            android:textColor="@color/text_primary"
+            android:lineSpacingMultiplier="1.4"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Coordenadas GPS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📍 "
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tvCoordsAlerta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.0000, 0.0000"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary"
+                android:fontFamily="monospace" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
