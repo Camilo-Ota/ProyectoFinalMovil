@@ -24,9 +24,10 @@
 
             <ImageView
                 android:id="@+id/imagenunoregistro"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/logocalculadora" />
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/logo2sinfondo2"
+                android:scaleType="fitCenter"/>
 
         </LinearLayout>
 
@@ -36,7 +37,7 @@
             android:layout_height="4dp"
             android:layout_gravity="center_horizontal"
             android:background="@color/primary"
-            android:layout_marginBottom="14dp" />
+            android:layout_marginBottom="12dp" />
 
         <!-- Título -->
         <TextView
@@ -86,7 +87,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="ℹ️ Si eres conductor, el administrador creará tu cuenta."
+                    android:text="Si eres conductor, el administrador creará tu cuenta."
                     android:textSize="13sp"
                     android:textColor="@color/text_secondary"
                     android:background="@color/primary_light"

@@ -11,7 +11,7 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- Header -->
+        <!-- HEADER -->
         <View
             android:layout_width="40dp"
             android:layout_height="4dp"
@@ -35,184 +35,241 @@
             android:text="Seleccione la operación que desea realizar"
             android:textSize="15sp"
             android:textColor="@color/text_secondary"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="22dp" />
 
-        <!-- CARD TEMPLATE STYLE (todos iguales, solo cambia texto) -->
-
-        <!-- Crear ruta -->
+        <!-- CARD 1 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:background="@color/surface"
             android:padding="18dp"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="14dp"
+            android:elevation="2dp">
 
-            <TextView
-                android:text="PASO 01"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:layout_marginBottom="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:background="@color/primary"
+                android:layout_marginEnd="16dp" />
 
-            <TextView
-                android:text="Crear ruta"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="6dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="Registrar el nombre de la ruta, descripción y radio de detección."
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="14dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/btnIrCrearRuta"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Ir a crear ruta"
-                android:textAllCaps="false"
-                android:textColor="@color/text_white"
-                android:backgroundTint="@color/primary" />
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PASO 01"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Crear ruta"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Registrar el nombre de la ruta, descripción y radio de detección."
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="12dp" />
+
+                <Button
+                    android:id="@+id/btnIrCrearRuta"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="Ir a crear ruta"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/primary" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Configurar puntos -->
+        <!-- CARD 2 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:background="@color/surface"
             android:padding="18dp"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="14dp"
+            android:elevation="2dp">
 
-            <TextView
-                android:text="PASO 02"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:background="@color/primary_light"
+                android:layout_marginEnd="16dp" />
 
-            <TextView
-                android:text="Configurar puntos"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="6dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="Selecciona una ruta existente y administra sus puntos."
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="14dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/btnIrConfigurarPuntos"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Configurar puntos"
-                android:textAllCaps="false"
-                android:textColor="@color/text_white"
-                android:backgroundTint="@color/primary"/>
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PASO 02"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Configurar puntos"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Selecciona una ruta existente y administra sus puntos."
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="12dp" />
+
+                <Button
+                    android:id="@+id/btnIrConfigurarPuntos"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="Configurar puntos"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/primary" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Iniciar recorrido -->
+        <!-- CARD 3 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:background="@color/surface"
             android:padding="18dp"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="14dp"
+            android:elevation="2dp">
 
-            <TextView
-                android:text="PASO 03"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:background="@color/primary_dark"
+                android:layout_marginEnd="16dp" />
 
-            <TextView
-                android:text="Iniciar recorrido"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="6dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="Comienza el seguimiento GPS de una ruta configurada."
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="14dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/btnIrIniciarRecorrido"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Iniciar recorrido"
-                android:textAllCaps="false"
-                android:textColor="@color/text_white"
-                android:backgroundTint="@color/primary"/>
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PASO 03"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Iniciar recorrido"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Comienza el seguimiento GPS de una ruta configurada."
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="12dp" />
+
+                <Button
+                    android:id="@+id/btnIrIniciarRecorrido"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="Iniciar recorrido"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/primary" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Historial -->
+        <!-- CARD 4 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:background="@color/surface"
-            android:padding="18dp">
+            android:padding="18dp"
+            android:elevation="2dp">
 
-            <TextView
-                android:text="PASO 04"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:background="@color/primary_light"
+                android:layout_marginEnd="16dp" />
 
-            <TextView
-                android:text="Historial de recorridos"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="6dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:text="Consulta los recorridos ya ejecutados."
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="14dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/btnIrHistorialRecorridos"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Ver historial"
-                android:textAllCaps="false"
-                android:textColor="@color/text_white"
-                android:backgroundTint="@color/primary"/>
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PASO 04"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Historial de recorridos"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Consulta los recorridos ya ejecutados."
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="12dp" />
+
+                <Button
+                    android:id="@+id/btnIrHistorialRecorridos"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="Ver historial"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/primary" />
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

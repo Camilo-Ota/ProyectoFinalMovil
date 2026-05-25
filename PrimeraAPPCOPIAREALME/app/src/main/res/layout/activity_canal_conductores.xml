@@ -111,14 +111,15 @@
                     android:layout_height="wrap_content"
                     android:text="Alerta"
                     android:background="@drawable/tag_selected_background"
-                    android:textColor="@color/text_white"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
-                    android:layout_marginEnd="8dp" />
+                    android:layout_marginEnd="8dp"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/primary" />
 
                 <TextView
                     android:id="@+id/tagTrancon"
@@ -201,14 +202,15 @@
                 android:layout_height="wrap_content"
                 android:text="Todos"
                 android:background="@drawable/tag_selected_background"
-                android:textColor="@color/text_white"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/text_white"
+                android:backgroundTint="@color/primary" />
 
             <TextView
                 android:id="@+id/filtroAlertas"
