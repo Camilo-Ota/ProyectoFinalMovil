@@ -14,18 +14,22 @@ class LogIn : AppCompatActivity() {
     private lateinit var btnLogIn: Button
     private lateinit var btnSignUp: Button
     private lateinit var btnForgotPassword: TextView
+    private lateinit var btnEntrarSinRegistro: TextView
+    private lateinit var imgLogoLogin: android.widget.ImageView
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
 
-        auth              = FirebaseAuth.getInstance()
-        editEmail         = findViewById(R.id.edt_Email)
-        editPassword      = findViewById(R.id.edt_password)
-        btnLogIn          = findViewById(R.id.btnLogin)
-        btnSignUp         = findViewById(R.id.btnSignUp)
-        btnForgotPassword = findViewById(R.id.btnForgotPassword)
+        auth                  = FirebaseAuth.getInstance()
+        editEmail             = findViewById(R.id.edt_Email)
+        editPassword          = findViewById(R.id.edt_password)
+        btnLogIn              = findViewById(R.id.btnLogin)
+        btnSignUp             = findViewById(R.id.btnSignUp)
+        btnForgotPassword     = findViewById(R.id.btnForgotPassword)
+        btnEntrarSinRegistro  = findViewById(R.id.btnEntrarSinRegistro)
+        imgLogoLogin          = findViewById(R.id.imgLogoLogin)
 
         btnLogIn.setOnClickListener {
             val email    = editEmail.text.toString().trim()
@@ -44,6 +48,30 @@ class LogIn : AppCompatActivity() {
         btnForgotPassword.setOnClickListener {
             startActivity(Intent(this, RecoverPassword::class.java))
         }
+
+        // Entrar directamente como visitante (sin autenticación)
+        val entrarVisitante = android.view.View.OnClickListener {
+
+            auth.signInAnonymously()
+                .addOnSuccessListener {
+
+                    startActivity(
+                        Intent(this, HomeUsuarioActivity::class.java)
+                    )
+
+                    finish()
+                }
+                .addOnFailureListener {
+
+                    Toast.makeText(
+                        this,
+                        "Error al entrar como visitante",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+        }
+        btnEntrarSinRegistro.setOnClickListener(entrarVisitante)
+        imgLogoLogin.setOnClickListener(entrarVisitante)
     }
 
     private fun login(email: String, password: String) {
@@ -83,7 +111,7 @@ class LogIn : AppCompatActivity() {
         val destino = when (rol) {
             User.ROL_ADMINISTRADOR -> HomeAdminActivity::class.java
             User.ROL_CONDUCTOR     -> HomeRutasActivity::class.java
-            User.ROL_EMPRESA       -> HomeEmpresaActivity::class.java  // ← nuevo
+            User.ROL_EMPRESA       -> HomeEmpresaActivity::class.java
             else                   -> HomeUsuarioActivity::class.java
         }
         startActivity(Intent(this, destino))
