@@ -128,34 +128,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="10dp">
 
             <Button
                 android:id="@+id/btnLogin"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:text="Ingresar"
                 android:textColor="@color/text_white"
                 android:textStyle="bold"
                 android:textAllCaps="false"
                 android:backgroundTint="@color/primary"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"
                 android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/btnSignUp"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_weight="1"
                 android:text="Registrarse"
                 android:textColor="@color/primary"
                 android:textStyle="bold"
                 android:textAllCaps="false"
                 android:background="@color/primary_light"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 

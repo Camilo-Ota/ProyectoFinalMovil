@@ -30,6 +30,5 @@
     <color name="role_user_primary">#4DA3FF</color>
     <color name="role_driver_primary">#0057B8</color>
     <color name="role_company_primary">#0B6E4F</color>
-    <color name="role_admin_primary">#6C2BD9</color>
-
+    <color name="role_admin_primary">#00A6A6</color>
 </resources>
