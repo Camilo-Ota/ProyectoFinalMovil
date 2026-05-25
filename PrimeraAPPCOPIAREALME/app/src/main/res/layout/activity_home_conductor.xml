@@ -16,7 +16,7 @@
         <View
             android:layout_width="48dp"
             android:layout_height="4dp"
-            android:background="@color/primary"
+            android:background="@color/role_driver_primary"
             android:layout_marginBottom="14dp"/>
 
         <TextView
@@ -49,7 +49,7 @@
             <View
                 android:layout_width="5dp"
                 android:layout_height="match_parent"
-                android:background="@color/primary"
+                android:background="@color/role_driver_primary"
                 android:layout_marginEnd="16dp"/>
 
             <LinearLayout
@@ -90,7 +90,7 @@
                     android:layout_height="44dp"
                     android:text="Continuar"
                     android:textAllCaps="false"
-                    android:backgroundTint="@color/primary"
+                    android:backgroundTint="@color/role_driver_primary"
                     android:textColor="@color/text_white"/>
             </LinearLayout>
         </LinearLayout>
@@ -148,7 +148,7 @@
                     android:layout_height="44dp"
                     android:text="Ver historial"
                     android:textAllCaps="false"
-                    android:backgroundTint="@color/primary"
+                    android:backgroundTint="@color/role_driver_primary"
                     android:textColor="@color/text_white"/>
             </LinearLayout>
         </LinearLayout>
@@ -206,7 +206,7 @@
                     android:layout_height="44dp"
                     android:text="Ver datos"
                     android:textAllCaps="false"
-                    android:backgroundTint="@color/primary"
+                    android:backgroundTint="@color/role_driver_primary"
                     android:textColor="@color/text_white"/>
             </LinearLayout>
         </LinearLayout>
@@ -264,7 +264,7 @@
                     android:layout_height="44dp"
                     android:text="Abrir chat"
                     android:textAllCaps="false"
-                    android:backgroundTint="@color/primary"
+                    android:backgroundTint="@color/role_driver_primary"
                     android:textColor="@color/text_white"/>
             </LinearLayout>
         </LinearLayout>

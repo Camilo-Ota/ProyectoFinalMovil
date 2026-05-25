@@ -15,7 +15,7 @@
         android:layout_width="48dp"
         android:layout_height="5dp"
         android:layout_marginBottom="14dp"
-        android:background="@color/primary" />
+        android:background="@color/role_admin_primary" />
 
     <TextView
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:indeterminateTint="@color/primary"
+        android:indeterminateTint="@color/role_admin_primary"
         android:visibility="gone"
         android:layout_marginBottom="14dp" />
 
@@ -57,7 +57,7 @@
         <View
             android:layout_width="5dp"
             android:layout_height="match_parent"
-            android:background="@color/primary"
+            android:background="@color/role_admin_primary"
             android:layout_marginEnd="16dp" />
 
         <LinearLayout
@@ -83,7 +83,7 @@
                 android:textAllCaps="false"
                 android:textStyle="bold"
                 android:textColor="@color/text_white"
-                android:backgroundTint="@color/primary"
+                android:backgroundTint="@color/role_admin_primary"
                 android:layout_marginBottom="10dp" />
 
             <Button
@@ -94,7 +94,7 @@
                 android:textAllCaps="false"
                 android:textStyle="bold"
                 android:textColor="@color/text_white"
-                android:backgroundTint="@color/secondary"
+                android:backgroundTint="@color/role_admin_primary"
                 android:layout_marginBottom="10dp" />
 
             <Button
@@ -104,8 +104,8 @@
                 android:text="Gestionar rutas"
                 android:textAllCaps="false"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:backgroundTint="@color/surface" />
+                android:textColor="@color/text_white"
+                android:backgroundTint="@color/role_admin_primary" />
         </LinearLayout>
     </LinearLayout>
 

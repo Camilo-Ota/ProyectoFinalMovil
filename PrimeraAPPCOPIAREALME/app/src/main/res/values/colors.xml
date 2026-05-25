@@ -27,4 +27,9 @@
     <color name="beige">#F5F5DC</color>
     <color name="negro">#000000</color>
 
+    <color name="role_user_primary">#4DA3FF</color>
+    <color name="role_driver_primary">#0057B8</color>
+    <color name="role_company_primary">#0B6E4F</color>
+    <color name="role_admin_primary">#6C2BD9</color>
+
 </resources>
