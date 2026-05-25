@@ -3,41 +3,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorBackground"
+    android:background="@color/background"
     android:paddingStart="20dp"
     android:paddingEnd="20dp"
     android:paddingTop="28dp"
     android:paddingBottom="16dp">
 
+    <!-- Línea decorativa -->
     <View
         android:layout_width="40dp"
         android:layout_height="4dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/primary"
         android:layout_marginBottom="12dp" />
 
+    <!-- Título -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Rutas disponibles"
-        style="@style/HomeRutas.TituloScreen"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
         android:layout_marginBottom="6dp" />
 
+    <!-- Subtítulo -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Selecciona la ruta que deseas seguir en tiempo real"
-        style="@style/HomeRutas.SubtituloScreen"
-        android:layout_marginBottom="20dp" />
+        android:textSize="14sp"
+        android:textColor="@color/text_secondary"
+        android:layout_marginBottom="22dp" />
 
+    <!-- Progress -->
     <ProgressBar
         android:id="@+id/progressBarRutasPasajero"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTint="@color/primary"
         android:visibility="gone"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="16dp" />
 
+    <!-- Estado vacío -->
     <LinearLayout
         android:id="@+id/layoutSinRutasPasajero"
         android:layout_width="match_parent"
@@ -49,30 +57,37 @@
         android:visibility="gone"
         android:layout_marginBottom="16dp">
 
+        <!-- Ícono -->
         <View
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:background="@drawable/ic_empty_circle"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="14dp" />
 
+        <!-- Texto principal -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="No hay rutas disponibles"
-            android:textSize="15sp"
-            android:textColor="@color/colorGris"
-            android:gravity="center" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:gravity="center"
+            android:layout_marginBottom="4dp" />
 
+        <!-- Texto secundario -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Aún no hay rutas configuradas en el sistema"
-            android:textSize="12sp"
-            android:textColor="@color/colorGris"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
             android:gravity="center"
-            android:layout_marginTop="4dp" />
+            android:lineSpacingExtra="2dp" />
+
     </LinearLayout>
 
+    <!-- Lista -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerRutasPasajero"
         android:layout_width="match_parent"

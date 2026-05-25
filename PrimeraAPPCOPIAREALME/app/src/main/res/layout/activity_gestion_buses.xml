@@ -4,62 +4,112 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorBackground"
+    android:background="@color/background"
     android:paddingStart="20dp"
     android:paddingEnd="20dp"
     android:paddingTop="28dp"
     android:paddingBottom="16dp">
 
+    <!-- Línea decorativa -->
     <View
-        android:layout_width="40dp"
-        android:layout_height="4dp"
-        android:background="@color/colorPrimary"
-        android:layout_marginBottom="12dp" />
+        android:layout_width="48dp"
+        android:layout_height="5dp"
+        android:layout_marginBottom="14dp"
+        android:background="@color/primary" />
 
+    <!-- Título -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Flota de buses"
-        style="@style/HomeRutas.TituloScreen"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
         android:layout_marginBottom="6dp" />
 
+    <!-- Subtítulo -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gestiona los buses de tu empresa"
-        style="@style/HomeRutas.CardDescripcion"
-        android:layout_marginBottom="20dp" />
+        android:text="Gestiona y administra los buses de tu empresa"
+        android:textSize="15sp"
+        android:textColor="@color/text_secondary"
+        android:layout_marginBottom="22dp" />
 
+    <!-- Botón agregar -->
     <Button
         android:id="@+id/btnAgregarBus"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:text="+ Agregar bus"
-        style="@style/HomeRutas.BotonPrimario"
-        android:layout_marginBottom="16dp" />
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@color/text_white"
+        android:backgroundTint="@color/primary"
+        android:elevation="2dp"
+        android:layout_marginBottom="18dp" />
 
+    <!-- Loading -->
     <ProgressBar
         android:id="@+id/progressBarBuses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:visibility="gone" />
+        android:indeterminateTint="@color/primary"
+        android:visibility="gone"
+        android:layout_marginBottom="12dp" />
 
-    <TextView
-        android:id="@+id/tvSinBuses"
+    <!-- Estado vacío -->
+    <LinearLayout
+        android:id="@+id/layoutSinBuses"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No tienes buses registrados.\nToca '+ Agregar bus' para comenzar."
-        android:textColor="@color/negro"
-        android:textSize="14sp"
+        android:orientation="vertical"
         android:gravity="center"
+        android:background="@drawable/card_background"
+        android:padding="28dp"
         android:visibility="gone"
-        android:layout_marginTop="40dp" />
+        android:layout_marginTop="30dp"
+        android:elevation="2dp">
 
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="🚌"
+            android:textSize="28sp"
+            android:background="@drawable/tag_selected_background"
+            android:layout_marginBottom="14dp" />
+
+        <TextView
+            android:id="@+id/tvSinBuses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No tienes buses registrados"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="6dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Toca '+ Agregar bus' para comenzar."
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+    <!-- Lista -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBuses"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="12dp" />
 
 </LinearLayout>

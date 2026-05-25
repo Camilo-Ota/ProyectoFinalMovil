@@ -1,95 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F1F1F2"
+    android:background="@color/background"
     android:paddingStart="20dp"
     android:paddingEnd="20dp"
     android:paddingTop="28dp"
     android:paddingBottom="20dp">
 
+    <!-- Barra decorativa -->
     <View
-        android:layout_width="40dp"
-        android:layout_height="4dp"
-        android:background="#FF6B00"
-        android:layout_marginBottom="10dp" />
+        android:layout_width="48dp"
+        android:layout_height="5dp"
+        android:background="@color/primary"
+        android:layout_marginBottom="12dp" />
 
+    <!-- Título -->
     <TextView
         android:id="@+id/tvNombreEmpresa"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Mi Empresa"
-        android:textSize="26sp"
+        android:textSize="30sp"
         android:textStyle="bold"
-        android:textColor="#1A2A35"
+        android:textColor="@color/text_primary"
         android:layout_marginBottom="4dp" />
 
+    <!-- Subtítulo -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Panel Empresa de Transporte"
         android:textSize="15sp"
-        android:textColor="#BCBABE"
-        android:layout_marginBottom="20dp" />
+        android:textColor="@color/text_secondary"
+        android:layout_marginBottom="22dp" />
 
+    <!-- Loading -->
     <ProgressBar
         android:id="@+id/progressBarEmpresa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:indeterminateTint="@color/primary"
         android:visibility="gone"
-        android:layout_marginBottom="8dp" />
-
-    <Button
-        android:id="@+id/btnGestionarFlota"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Gestionar flota de buses"
-        android:textAllCaps="false"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="@color/colorGris"
-        android:padding="12dp"
         android:layout_marginBottom="10dp" />
 
-    <Button
-        android:id="@+id/btnAgregarAdmin"
+    <!-- Tarjeta de acciones -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="+ Nuevo administrador"
-        android:textAllCaps="false"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#FF6B00"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp" />
+        android:orientation="vertical"
+        android:background="@drawable/card_background"
+        android:padding="18dp"
+        android:layout_marginBottom="20dp">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Acciones rápidas"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary"
+            android:layout_marginBottom="14dp" />
+
+        <Button
+            android:id="@+id/btnGestionarFlota"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gestionar flota de buses"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textColor="@color/text_white"
+            android:backgroundTint="@color/primary"
+            android:padding="13dp"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/btnAgregarAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+ Nuevo administrador"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textColor="@color/text_white"
+            android:backgroundTint="@color/secondary"
+            android:padding="13dp" />
+
+    </LinearLayout>
+
+    <!-- Título sección -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Administradores registrados"
-        android:textSize="15sp"
+        android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="#1A2A35"
-        android:layout_marginBottom="8dp" />
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="10dp" />
 
+    <!-- Lista -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAdminsEmpresa"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp" />
 
+    <!-- Botón cerrar sesión -->
     <Button
         android:id="@+id/btnCerrarSesionEmpresa"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cerrar sesión"
         android:textAllCaps="false"
-        android:textColor="#FF6B00"
         android:textStyle="bold"
-        android:backgroundTint="#FFFFFF"
-        android:padding="12dp"
-        android:layout_marginTop="12dp" />
+        android:textColor="@color/primary"
+        android:backgroundTint="@color/surface"
+        android:padding="13dp"
+        android:layout_marginTop="14dp" />
 
 </LinearLayout>

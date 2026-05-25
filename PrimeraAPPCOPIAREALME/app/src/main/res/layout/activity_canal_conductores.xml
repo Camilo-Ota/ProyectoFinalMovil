@@ -1,44 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- res/layout/activity_canal_conductores.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorBackground">
+    android:background="@color/background">
 
     <!-- ===== ENCABEZADO ===== -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="24dp"
-        android:paddingBottom="12dp"
-        android:background="@color/colorBackground">
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="18dp">
 
         <View
-            android:layout_width="40dp"
-            android:layout_height="4dp"
-            android:background="@color/colorPrimary"
-            android:layout_marginBottom="10dp" />
+            android:layout_width="56dp"
+            android:layout_height="5dp"
+            android:background="@color/primary"
+            android:layout_marginBottom="16dp" />
 
         <TextView
             android:id="@+id/tvTituloCanal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Canal de conductores"
-            style="@style/HomeRutas.TituloScreen"
-            android:layout_marginBottom="4dp" />
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="6dp" />
 
         <TextView
             android:id="@+id/tvSubtituloCanal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Comparte novedades, trancons y alertas con tu equipo"
-            style="@style/HomeRutas.SubtituloScreen"
-            android:layout_marginBottom="4dp" />
+            android:text="Comparte novedades, trancones y alertas con tu equipo"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:lineSpacingExtra="2dp" />
 
     </LinearLayout>
 
@@ -49,51 +50,55 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/card_background"
-        android:padding="14dp"
+        android:elevation="3dp"
+        android:padding="18dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="14dp">
 
-        <!-- Avatar + campo de texto -->
+        <!-- Avatar + campo -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="top">
 
-            <!-- Avatar del conductor actual -->
             <TextView
                 android:id="@+id/tvAvatarPropio"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:background="@drawable/avatar_background"
                 android:text="YO"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/primary"
                 android:gravity="center"
-                android:layout_marginEnd="10dp" />
+                android:layout_marginEnd="12dp" />
 
             <EditText
                 android:id="@+id/etNuevaPublicacion"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/input_background"
                 android:hint="¿Qué quieres reportar?"
-                style="@style/CrearRuta.InputField"
-                android:minLines="2"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="14sp"
+                android:minLines="3"
+                android:maxLines="5"
                 android:gravity="top"
-                android:inputType="textMultiLine"
-                android:maxLines="5" />
+                android:padding="14dp"
+                android:inputType="textMultiLine" />
         </LinearLayout>
 
-        <!-- Selector de categoría -->
+        <!-- Tags -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="14dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -106,14 +111,14 @@
                     android:layout_height="wrap_content"
                     android:text="Alerta"
                     android:background="@drawable/tag_selected_background"
-                    android:textColor="@color/colorBlanco"
-                    android:textSize="11sp"
+                    android:textColor="@color/text_white"
+                    android:textSize="12sp"
                     android:textStyle="bold"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_marginEnd="6dp" />
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginEnd="8dp" />
 
                 <TextView
                     android:id="@+id/tagTrancon"
@@ -121,14 +126,14 @@
                     android:layout_height="wrap_content"
                     android:text="Trancón"
                     android:background="@drawable/tag_normal_background"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
                     android:textStyle="bold"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_marginEnd="6dp" />
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginEnd="8dp" />
 
                 <TextView
                     android:id="@+id/tagInfo"
@@ -136,14 +141,14 @@
                     android:layout_height="wrap_content"
                     android:text="Info"
                     android:background="@drawable/tag_normal_background"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
                     android:textStyle="bold"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:layout_marginEnd="6dp" />
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:layout_marginEnd="8dp" />
 
                 <TextView
                     android:id="@+id/tagGeneral"
@@ -151,24 +156,28 @@
                     android:layout_height="wrap_content"
                     android:text="General"
                     android:background="@drawable/tag_normal_background"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp"
                     android:textStyle="bold"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp" />
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
 
             </LinearLayout>
         </HorizontalScrollView>
 
-        <!-- Botón publicar -->
+        <!-- Botón -->
         <Button
             android:id="@+id/btnPublicar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:text="Publicar"
-            style="@style/HomeRutas.BotonPrimario" />
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="@color/text_white"
+            android:backgroundTint="@color/primary" />
 
     </LinearLayout>
 
@@ -179,7 +188,7 @@
         android:scrollbars="none"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="12dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -192,13 +201,13 @@
                 android:layout_height="wrap_content"
                 android:text="Todos"
                 android:background="@drawable/tag_selected_background"
-                android:textColor="@color/colorBlanco"
-                android:textSize="11sp"
+                android:textColor="@color/text_white"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:layout_marginEnd="8dp" />
 
             <TextView
@@ -207,28 +216,28 @@
                 android:layout_height="wrap_content"
                 android:text="Alertas"
                 android:background="@drawable/tag_normal_background"
-                android:textColor="@color/colorPrimary"
-                android:textSize="11sp"
+                android:textColor="@color/primary"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:layout_marginEnd="8dp" />
 
             <TextView
                 android:id="@+id/filtroTrancons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Trancons"
+                android:text="Trancones"
                 android:background="@drawable/tag_normal_background"
-                android:textColor="@color/colorPrimary"
-                android:textSize="11sp"
+                android:textColor="@color/primary"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:layout_marginEnd="8dp" />
 
             <TextView
@@ -237,27 +246,28 @@
                 android:layout_height="wrap_content"
                 android:text="Info"
                 android:background="@drawable/tag_normal_background"
-                android:textColor="@color/colorPrimary"
-                android:textSize="11sp"
+                android:textColor="@color/primary"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp" />
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
 
         </LinearLayout>
     </HorizontalScrollView>
 
-    <!-- ===== LISTA DE PUBLICACIONES ===== -->
+    <!-- ===== LOADING ===== -->
     <ProgressBar
         android:id="@+id/progressBarCanal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTint="@color/primary"
         android:visibility="gone"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="10dp" />
 
+    <!-- ===== EMPTY STATE ===== -->
     <LinearLayout
         android:id="@+id/layoutSinPublicaciones"
         android:layout_width="match_parent"
@@ -265,43 +275,46 @@
         android:orientation="vertical"
         android:gravity="center"
         android:background="@drawable/card_background"
-        android:padding="32dp"
+        android:elevation="2dp"
+        android:padding="36dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:visibility="gone">
 
         <View
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:background="@drawable/ic_empty_circle"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="14dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sin publicaciones aún"
-            android:textSize="15sp"
-            android:textColor="@color/colorGris"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:gravity="center" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sé el primero en reportar algo"
-            android:textSize="12sp"
-            android:textColor="@color/colorGris"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
             android:gravity="center"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="6dp" />
     </LinearLayout>
 
+    <!-- ===== LISTA ===== -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerPublicaciones"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="18dp"
         android:clipToPadding="false" />
 
 </LinearLayout>

@@ -1,55 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@drawable/card_background"
+    android:background="@color/surface"
     android:padding="18dp"
     android:layout_marginBottom="12dp">
 
+    <!-- ACENTO -->
     <View
         android:layout_width="4dp"
         android:layout_height="match_parent"
-        android:background="@drawable/ic_card_accent"
+        android:background="@color/primary"
         android:layout_marginEnd="14dp" />
 
+    <!-- CONTENIDO -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
 
+        <!-- NOMBRE -->
         <TextView
             android:id="@+id/tvNombreRutaPasajero"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/HomeRutas.CardTitulo"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="4dp" />
 
+        <!-- DESCRIPCIÓN -->
         <TextView
             android:id="@+id/tvDescripcionRutaPasajero"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/HomeRutas.CardDescripcion"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="8dp" />
 
+        <!-- ESTADO -->
         <TextView
             android:id="@+id/tvEstadoRutaPasajero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="• En servicio"
             android:textSize="12sp"
-            android:textColor="@color/colorPrimary"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/primary" />
+
     </LinearLayout>
 
+    <!-- FLECHA -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:text="›"
         android:textSize="28sp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/text_secondary"
         android:paddingStart="8dp" />
 
 </LinearLayout>

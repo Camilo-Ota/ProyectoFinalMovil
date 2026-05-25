@@ -4,43 +4,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorBackground"
+    android:background="@color/background"
     android:paddingStart="20dp"
     android:paddingEnd="20dp"
     android:paddingTop="28dp"
     android:paddingBottom="16dp">
 
+    <!-- Barra decorativa -->
     <View
-        android:layout_width="40dp"
-        android:layout_height="4dp"
-        android:background="@color/colorPrimary"
-        android:layout_marginBottom="12dp" />
+        android:layout_width="48dp"
+        android:layout_height="5dp"
+        android:layout_marginBottom="14dp"
+        android:background="@color/primary" />
 
+    <!-- Título -->
     <TextView
         android:id="@+id/tvTituloHistorial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Historial de recorridos"
-        style="@style/HomeRutas.TituloScreen"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
         android:layout_marginBottom="6dp" />
 
+    <!-- Subtítulo -->
     <TextView
         android:id="@+id/tvSubtituloHistorial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Aquí se muestran los recorridos realizados"
-        style="@style/HomeRutas.SubtituloScreen"
-        android:layout_marginBottom="16dp" />
+        android:textSize="15sp"
+        android:textColor="@color/text_secondary"
+        android:layout_marginBottom="18dp" />
 
+    <!-- Indicador de carga -->
     <ProgressBar
         android:id="@+id/progressBarHistorial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTint="@color/primary"
         android:visibility="gone"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="14dp" />
 
+    <!-- Estado vacío -->
     <LinearLayout
         android:id="@+id/layoutSinHistorial"
         android:layout_width="match_parent"
@@ -53,36 +61,38 @@
         android:layout_marginBottom="16dp">
 
         <View
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/ic_empty_circle"
-            android:layout_marginBottom="12dp" />
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginBottom="14dp"
+            android:background="@drawable/ic_empty_circle" />
 
         <TextView
             android:id="@+id/tvSinHistorial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="No hay recorridos registrados"
-            android:textSize="15sp"
-            android:textColor="@color/colorGris"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:gravity="center" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Los recorridos completados aparecerán aquí"
-            android:textSize="12sp"
-            android:textColor="@color/colorGris"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
             android:gravity="center"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="6dp" />
     </LinearLayout>
 
+    <!-- Lista -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHistorialRecorridos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clipToPadding="false"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="10dp" />
 
 </LinearLayout>

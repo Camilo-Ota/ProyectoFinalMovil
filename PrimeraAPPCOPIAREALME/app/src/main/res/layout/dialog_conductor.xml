@@ -2,102 +2,160 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:fillViewport="true"
+    android:background="@color/background"
+    android:padding="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nombre completo *"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextoTitulo"
-            android:layout_marginBottom="4dp" />
-
-        <EditText
-            android:id="@+id/edtNombreConductor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:background="@drawable/input_background"
-            android:padding="10dp"
-            android:layout_marginBottom="14dp" />
+        <!-- HEADER -->
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:background="@color/primary"
+            android:layout_marginBottom="12dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Correo electrónico *"
-            android:textSize="14sp"
+            android:text="Registrar conductor"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/colorTextoTitulo"
-            android:layout_marginBottom="4dp" />
-
-        <EditText
-            android:id="@+id/edtEmailConductor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:background="@drawable/input_background"
-            android:padding="10dp"
-            android:layout_marginBottom="14dp" />
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="6dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Contraseña * (mín. 6 caracteres)"
+            android:text="Complete la información del conductor"
             android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextoTitulo"
-            android:layout_marginBottom="4dp" />
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="24dp" />
 
-        <EditText
-            android:id="@+id/edtPasswordConductor"
+        <!-- CARD -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:background="@drawable/input_background"
-            android:padding="10dp"
-            android:layout_marginBottom="14dp" />
+            android:orientation="vertical"
+            android:background="@color/surface"
+            android:padding="18dp"
+            android:elevation="2dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Teléfono"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextoTitulo"
-            android:layout_marginBottom="4dp" />
+            <!-- NOMBRE -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombre completo *"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="6dp" />
 
-        <EditText
-            android:id="@+id/edtPhoneConductor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="phone"
-            android:background="@drawable/input_background"
-            android:padding="10dp"
-            android:layout_marginBottom="14dp" />
+            <EditText
+                android:id="@+id/edtNombreConductor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese el nombre"
+                android:inputType="textPersonName"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:background="@drawable/input_background"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Placa del vehículo"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextoTitulo"
-            android:layout_marginBottom="4dp" />
+            <!-- EMAIL -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Correo electrónico *"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="6dp" />
 
-        <EditText
-            android:id="@+id/edtPlacaConductor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textCapCharacters"
-            android:background="@drawable/input_background"
-            android:padding="10dp"
-            android:layout_marginBottom="4dp" />
+            <EditText
+                android:id="@+id/edtEmailConductor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="ejemplo@correo.com"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:background="@drawable/input_background"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- PASSWORD -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Contraseña *"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/edtPasswordConductor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mínimo 6 caracteres"
+                android:inputType="textPassword"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:background="@drawable/input_background"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- TELÉFONO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Teléfono"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/edtPhoneConductor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="3001234567"
+                android:inputType="phone"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:background="@drawable/input_background"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- PLACA -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Placa del vehículo"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/edtPlacaConductor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="ABC123"
+                android:inputType="textCapCharacters"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:background="@drawable/input_background"
+                android:padding="12dp"
+                android:layout_marginBottom="4dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
+
 </ScrollView>

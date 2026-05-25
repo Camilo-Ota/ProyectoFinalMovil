@@ -3,98 +3,159 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorBackground">
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="22dp">
 
+        <!-- Línea decorativa -->
         <View
-            android:layout_width="32dp"
+            android:layout_width="40dp"
             android:layout_height="4dp"
-            android:background="@color/colorPrimary"
-            android:layout_marginBottom="10dp" />
+            android:background="@color/primary"
+            android:layout_marginBottom="12dp" />
 
+        <!-- Título -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Agregar punto"
-            style="@style/HomeRutas.TituloScreen"
-            android:textSize="20sp"
-            android:layout_marginBottom="18dp" />
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="6dp" />
 
+        <!-- Subtítulo -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nombre del punto"
-            style="@style/CrearRuta.FieldLabel" />
+            android:text="Configura la información del nuevo punto de la ruta"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="24dp" />
 
-        <EditText
-            android:id="@+id/etNombrePunto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ej: Peaje 1"
-            android:inputType="textCapWords"
-            style="@style/CrearRuta.InputField"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Orden del punto"
-            style="@style/CrearRuta.FieldLabel" />
-
-        <EditText
-            android:id="@+id/etOrdenPunto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ej: 1"
-            android:inputType="number"
-            style="@style/CrearRuta.InputField"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tipo de punto"
-            style="@style/CrearRuta.FieldLabel" />
-
-        <Spinner
-            android:id="@+id/spTipoPunto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/input_background"
-            android:padding="10dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="16dp" />
-
+        <!-- CARD -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/badge_radio_background"
-            android:padding="12dp">
+            android:orientation="horizontal"
+            android:background="@drawable/card_background"
+            android:padding="18dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Coordenadas del punto"
-                style="@style/CrearRuta.FieldLabel"
-                android:layout_marginBottom="4dp" />
+            <!-- Barra lateral -->
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:background="@color/primary"
+                android:layout_marginEnd="14dp" />
 
-            <TextView
-                android:id="@+id/tvCoordenadasPunto"
-                android:layout_width="match_parent"
+            <!-- Contenido -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Latitud: 0.0\nLongitud: 0.0"
-                android:textSize="13sp"
-                android:textColor="@color/colorPrimary"
-                android:lineSpacingMultiplier="1.5" />
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!-- Nombre -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre del punto"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/etNombrePunto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ej: Peaje Norte"
+                    android:inputType="textCapWords"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:background="@drawable/input_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="18dp" />
+
+                <!-- Orden -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Orden del punto"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/etOrdenPunto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ej: 1"
+                    android:inputType="number"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:background="@drawable/input_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="18dp" />
+
+                <!-- Tipo -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tipo de punto"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <Spinner
+                    android:id="@+id/spTipoPunto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/input_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Coordenadas -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/primary_light"
+                    android:padding="14dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Coordenadas del punto"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:id="@+id/tvCoordenadasPunto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Latitud: 0.0&#10;Longitud: 0.0"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:lineSpacingExtra="3dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
+
 </ScrollView>

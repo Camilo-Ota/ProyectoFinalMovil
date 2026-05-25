@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/colorBackground">
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,32 +15,38 @@
         android:paddingTop="28dp"
         android:paddingBottom="28dp">
 
+        <!-- Barra decorativa -->
         <View
             android:layout_width="40dp"
             android:layout_height="4dp"
-            android:background="@color/colorPrimary"
+            android:background="@color/primary"
             android:layout_marginBottom="12dp" />
 
+        <!-- Título -->
         <TextView
             android:id="@+id/tvTituloRecorrido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Recorrido"
-            style="@style/HomeRutas.TituloScreen"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="20dp" />
 
+        <!-- CARD PRINCIPAL -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@drawable/card_background"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:padding="18dp"
+            android:layout_marginBottom="20dp">
 
+            <!-- Barra lateral -->
             <View
                 android:layout_width="4dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/ic_card_accent"
+                android:background="@color/primary"
                 android:layout_marginEnd="14dp" />
 
             <LinearLayout
@@ -54,23 +60,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Ruta:"
-                    style="@style/HomeRutas.CardTitulo"
-                    android:layout_marginBottom="10dp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="14dp" />
 
                 <TextView
                     android:id="@+id/tvEstadoRecorrido"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Estado: pendiente"
-                    style="@style/CrearRuta.FieldLabel"
-                    android:layout_marginBottom="6dp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp" />
 
                 <TextView
                     android:id="@+id/tvCantidadPuntosRecorrido"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Puntos: 0"
-                    style="@style/HomeRutas.CardDescripcion"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginBottom="6dp" />
 
                 <TextView
@@ -78,7 +89,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Siguiente punto: --"
-                    style="@style/HomeRutas.CardDescripcion"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginBottom="6dp" />
 
                 <TextView
@@ -86,7 +98,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Inicio: --"
-                    style="@style/HomeRutas.CardDescripcion"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginBottom="6dp" />
 
                 <TextView
@@ -94,7 +107,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Ubicación actual: --"
-                    style="@style/HomeRutas.CardDescripcion"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginBottom="6dp" />
 
                 <TextView
@@ -102,68 +116,88 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Progreso: 0/0"
-                    style="@style/HomeRutas.CardDescripcion" />
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary" />
 
             </LinearLayout>
+
         </LinearLayout>
 
+        <!-- BOTÓN INICIAR -->
         <Button
             android:id="@+id/btnIniciarRecorrido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Iniciar recorrido"
-            style="@style/HomeRutas.BotonPrimario"
-            android:layout_marginBottom="10dp" />
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textColor="@color/text_white"
+            android:textSize="15sp"
+            android:backgroundTint="@color/primary"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginBottom="12dp" />
 
+        <!-- BOTÓN MAPA -->
         <Button
             android:id="@+id/btnNavegacionConductor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ver mapa de navegación"
             android:enabled="false"
-            android:backgroundTint="#1565C0"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            android:textStyle="bold"
             android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="@color/text_white"
+            android:backgroundTint="@color/primary_dark"
             android:paddingTop="14dp"
             android:paddingBottom="14dp"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="12dp" />
 
+        <!-- BOTÓN FINALIZAR -->
         <Button
             android:id="@+id/btnFinalizarManualRecorrido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Finalizar manualmente"
             android:enabled="false"
-            android:background="@drawable/btn_secondary"
-            android:textColor="@color/colorPrimary"
-            android:textSize="14sp"
-            android:textStyle="bold"
             android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="@color/primary"
+            android:backgroundTint="@color/surface"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="26dp" />
 
+        <!-- Separador -->
         <View
             android:layout_width="40dp"
             android:layout_height="4dp"
-            android:background="@color/colorPrimaryLight"
-            android:layout_marginBottom="10dp" />
+            android:background="@color/primary_light"
+            android:layout_marginBottom="12dp" />
 
+        <!-- Título sección -->
         <TextView
             android:id="@+id/tvTituloPuntosRecorrido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Seguimiento de puntos"
-            style="@style/HomeRutas.CardTitulo"
-            android:layout_marginBottom="12dp" />
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="14dp" />
 
+        <!-- Recycler -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerPuntosSeguimiento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false" />
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp" />
 
     </LinearLayout>
+
 </ScrollView>

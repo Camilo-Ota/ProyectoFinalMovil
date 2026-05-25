@@ -7,27 +7,30 @@
     android:layout_marginTop="6dp"
     android:paddingStart="4dp">
 
+    <!-- AVATAR -->
     <TextView
         android:id="@+id/tvAvatarRespuesta"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:background="@drawable/avatar_background"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@color/primary_light"
         android:text="MR"
-        android:textSize="9sp"
+        android:textSize="10sp"
         android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/primary"
         android:gravity="center"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="2dp" />
 
+    <!-- BUBBLE -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:background="@drawable/reply_bubble_background"
-        android:padding="8dp">
+        android:background="@color/surface"
+        android:padding="10dp">
 
+        <!-- AUTOR -->
         <TextView
             android:id="@+id/tvAutorRespuesta"
             android:layout_width="match_parent"
@@ -35,26 +38,29 @@
             android:text="Miguel R."
             android:textSize="11sp"
             android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/primary"
             android:layout_marginBottom="2dp" />
 
+        <!-- CONTENIDO -->
         <TextView
             android:id="@+id/tvContenidoRespuesta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Confirmado, ya pasé por ahí."
             android:textSize="12sp"
-            android:textColor="@color/colorTextoTitulo"
+            android:textColor="@color/text_primary"
             android:lineSpacingMultiplier="1.4" />
 
+        <!-- TIEMPO -->
         <TextView
             android:id="@+id/tvTiempoRespuesta"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Hace 3 min"
             android:textSize="10sp"
-            android:textColor="@color/colorGris"
+            android:textColor="@color/text_secondary"
             android:layout_marginTop="4dp" />
 
     </LinearLayout>
+
 </LinearLayout>

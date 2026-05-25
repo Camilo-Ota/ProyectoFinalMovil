@@ -1,150 +1,254 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@color/background"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="18dp">
 
-        <!-- Mapa del recorrido -->
+        <!-- Línea decorativa -->
+        <View
+            android:layout_width="48dp"
+            android:layout_height="5dp"
+            android:layout_marginBottom="14dp"
+            android:background="@color/primary" />
+
+        <!-- Título -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Detalle del recorrido"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="20dp" />
+
+        <!-- MAPA -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="12dp"
+            android:layout_marginBottom="18dp"
+            app:cardCornerRadius="18dp"
             app:cardElevation="4dp"
-            xmlns:app="http://schemas.android.com/apk/res-auto">
+            app:cardBackgroundColor="@color/surface">
 
             <fragment
                 android:id="@+id/mapFragmentDetalle"
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="260dp" />
+                android:layout_height="270dp" />
         </androidx.cardview.widget.CardView>
 
-        <!-- Datos del recorrido -->
+        <!-- DATOS -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            xmlns:app="http://schemas.android.com/apk/res-auto">
+            android:layout_marginBottom="18dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="@color/surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="22dp">
 
                 <ProgressBar
                     android:id="@+id/progressBarDetalle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:indeterminateTint="@color/primary"
                     android:visibility="gone" />
 
+                <!-- Ruta -->
                 <TextView
                     android:id="@+id/tvDetalleRuta"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
+                    android:text="Ruta: —"
+                    android:textSize="22sp"
                     android:textStyle="bold"
-                    android:textColor="#212121"
-                    android:layout_marginBottom="8dp"
-                    android:text="Ruta: —" />
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="16dp" />
 
+                <!-- Estado -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/tag_selected_background"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:layout_marginBottom="18dp">
+
+                    <TextView
+                        android:id="@+id/tvDetalleEstado"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Estado: —"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary" />
+                </LinearLayout>
+
+                <!-- Inicio -->
                 <TextView
-                    android:id="@+id/tvDetalleEstado"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp"
+                    android:text="Hora de inicio"
+                    android:textSize="13sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="6dp"
-                    android:text="Estado: —" />
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="4dp" />
 
                 <TextView
                     android:id="@+id/tvDetalleInicio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="#424242"
-                    android:layout_marginBottom="4dp"
-                    android:text="Inicio: —" />
+                    android:text="Inicio: —"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Fin -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hora de finalización"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="4dp" />
 
                 <TextView
                     android:id="@+id/tvDetalleFin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="#424242"
-                    android:layout_marginBottom="4dp"
-                    android:text="Fin: —" />
+                    android:text="Fin: —"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Duración -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Duración"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="4dp" />
 
                 <TextView
                     android:id="@+id/tvDetalleDuracion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="#424242"
-                    android:layout_marginBottom="4dp"
-                    android:text="Duración: —" />
+                    android:text="Duración: —"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Puntos -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Puntos recorridos"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="4dp" />
 
                 <TextView
                     android:id="@+id/tvDetallePuntos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="#424242"
-                    android:text="Puntos recorridos: —" />
+                    android:text="Puntos recorridos: —"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_primary" />
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Acciones (solo visible si estado == en_proceso) -->
+        <!-- ACCIONES -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardAcciones"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            xmlns:app="http://schemas.android.com/apk/res-auto">
+            app:cardCornerRadius="18dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="@color/surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="22dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/tag_selected_background"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="RECORRIDO ACTIVO"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Este recorrido está en proceso"
-                    android:textSize="14sp"
-                    android:textColor="#0D47A1"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
+                    android:text="Este recorrido todavía está en proceso."
+                    android:textSize="15sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="18dp" />
 
                 <Button
                     android:id="@+id/btnContinuarRecorrido"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="▶ Continuar recorrido"
-                    android:backgroundTint="#1995AD"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_height="56dp"
+                    android:text="Continuar recorrido"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/primary"
+                    android:layout_marginBottom="10dp" />
 
                 <Button
                     android:id="@+id/btnFinalizarRecorrido"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="⏹ Finalizar recorrido"
-                    android:backgroundTint="#E65100" />
+                    android:layout_height="56dp"
+                    android:text="Finalizar recorrido"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/error" />
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
+
 </ScrollView>

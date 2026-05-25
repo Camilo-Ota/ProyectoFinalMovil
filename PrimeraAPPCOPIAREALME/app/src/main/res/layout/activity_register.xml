@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="@color/background"
+    android:fillViewport="true"
     tools:context=".SignUp">
 
     <LinearLayout
@@ -11,131 +12,197 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp">
 
         <!-- LOGO -->
         <LinearLayout
             android:id="@+id/logocentral"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="18dp">
 
             <ImageView
                 android:id="@+id/imagenunoregistro"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/logocalculadora" />
+
         </LinearLayout>
 
+        <!-- Línea decorativa -->
+        <View
+            android:layout_width="42dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/primary"
+            android:layout_marginBottom="14dp" />
+
+        <!-- Título -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Registro de usuario"
-            android:textSize="26sp"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="@color/colorTextoTitulo"
+            android:textColor="@color/text_primary"
             android:gravity="center"
-            android:padding="10dp" />
+            android:layout_marginBottom="6dp" />
 
-        <!-- Nota informativa: los conductores los registra el admin -->
+        <!-- Subtítulo -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ℹ️ Si eres conductor, el administrador creará tu cuenta."
-            android:textSize="13sp"
-            android:textColor="@color/colorGris"
+            android:text="Completa los datos para crear tu cuenta"
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
             android:gravity="center"
-            android:layout_marginBottom="16dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp" />
+            android:layout_marginBottom="24dp" />
 
-        <!-- NOMBRES -->
-        <TextView
+        <!-- Card principal -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nombres completos"
-            android:textSize="16sp"
-            android:textColor="@color/colorTextoTitulo"
-            android:layout_marginTop="12dp" />
+            android:orientation="horizontal"
+            android:background="@drawable/card_background"
+            android:padding="18dp"
+            android:layout_marginBottom="20dp">
 
-        <EditText
-            android:id="@+id/edt_Name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:textSize="18sp"
-            android:textColor="@color/colorTextoTitulo"
-            android:background="@drawable/input_background"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="12dp" />
+            <!-- Barra lateral -->
+            <View
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:background="@color/primary"
+                android:layout_marginEnd="14dp" />
 
-        <!-- EMAIL -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Correo electrónico"
-            android:textSize="16sp"
-            android:textColor="@color/colorTextoTitulo" />
+            <!-- Contenido -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/edt_Email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:textSize="18sp"
-            android:textColor="@color/colorTextoTitulo"
-            android:background="@drawable/input_background"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="12dp" />
+                <!-- Nota -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ℹ️ Si eres conductor, el administrador creará tu cuenta."
+                    android:textSize="13sp"
+                    android:textColor="@color/text_secondary"
+                    android:background="@color/primary_light"
+                    android:padding="12dp"
+                    android:layout_marginBottom="20dp" />
 
-        <!-- TELÉFONO -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Teléfono"
-            android:textSize="16sp"
-            android:textColor="@color/colorTextoTitulo" />
+                <!-- NOMBRES -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nombres completos"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
 
-        <EditText
-            android:id="@+id/edt_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="phone"
-            android:textSize="18sp"
-            android:textColor="@color/colorTextoTitulo"
-            android:background="@drawable/input_background"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="12dp" />
+                <EditText
+                    android:id="@+id/edt_Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ingresa tus nombres"
+                    android:inputType="textPersonName"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:background="@drawable/input_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="16dp" />
 
-        <!-- CONTRASEÑA -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Contraseña"
-            android:textSize="16sp"
-            android:textColor="@color/colorTextoTitulo" />
+                <!-- EMAIL -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Correo electrónico"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
 
-        <EditText
-            android:id="@+id/edt_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:textSize="18sp"
-            android:textColor="@color/colorTextoTitulo"
-            android:background="@drawable/input_background"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="20dp" />
+                <EditText
+                    android:id="@+id/edt_Email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="ejemplo@correo.com"
+                    android:inputType="textEmailAddress"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:background="@drawable/input_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="16dp" />
 
+                <!-- TELÉFONO -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Teléfono"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/edt_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="3001234567"
+                    android:inputType="phone"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:background="@drawable/input_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- CONTRASEÑA -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Contraseña"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <EditText
+                    android:id="@+id/edt_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="••••••••"
+                    android:inputType="textPassword"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:background="@drawable/input_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- BOTÓN -->
         <Button
             android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Registrarse"
-            android:textSize="16sp"
+            android:text="Crear cuenta"
+            android:textSize="15sp"
             android:textStyle="bold"
-            android:textColor="@color/colorBlanco"
-            android:background="@drawable/btn_primary"
-            android:padding="14dp" />
+            android:textColor="@color/text_white"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/primary"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp" />
 
     </LinearLayout>
+
 </ScrollView>

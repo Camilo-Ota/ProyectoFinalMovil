@@ -4,14 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@drawable/card_background"
+    android:background="@color/surface"
     android:padding="16dp"
     android:layout_marginBottom="12dp">
 
+    <!-- Barra lateral de acento -->
     <View
         android:layout_width="4dp"
         android:layout_height="match_parent"
-        android:background="@drawable/ic_card_accent"
+        android:background="@color/primary"
         android:layout_marginEnd="14dp" />
 
     <LinearLayout
@@ -20,47 +21,54 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
+        <!-- PLACA -->
         <TextView
             android:id="@+id/tvPlacaBusItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/colorTextoTitulo"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="2dp" />
 
+        <!-- MODELO -->
         <TextView
             android:id="@+id/tvModeloBusItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="13sp"
-            android:textColor="@color/colorTextoDescripcion"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="4dp" />
 
+        <!-- CAPACIDAD -->
         <TextView
             android:id="@+id/tvCapacidadBusItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="@color/colorTextoDescripcion"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="4dp" />
 
+        <!-- ESTADO -->
         <TextView
             android:id="@+id/tvEstadoBusItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="13sp"
             android:textStyle="bold"
+            android:textColor="@color/primary"
             android:layout_marginBottom="4dp" />
 
+        <!-- CONDUCTOR -->
         <TextView
             android:id="@+id/tvConductorBusItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="@color/colorTextoDescripcion"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="10dp" />
 
+        <!-- BOTONES -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,25 +78,26 @@
                 android:id="@+id/btnEditarEstadoBus"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="36dp"
+                android:layout_height="38dp"
                 android:text="Estado"
                 android:textSize="12sp"
                 android:textAllCaps="false"
-                android:backgroundTint="@color/colorPrimary"
-                android:textColor="#FFFFFF"
+                android:backgroundTint="@color/primary"
+                android:textColor="@color/text_white"
                 android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/btnEliminarBus"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="36dp"
+                android:layout_height="38dp"
                 android:text="Eliminar"
                 android:textSize="12sp"
                 android:textAllCaps="false"
-                android:backgroundTint="#C62828"
-                android:textColor="#FFFFFF" />
+                android:backgroundTint="@color/error"
+                android:textColor="@color/text_white" />
 
         </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
