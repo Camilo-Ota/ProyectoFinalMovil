@@ -15,8 +15,8 @@
         <View
             android:layout_width="40dp"
             android:layout_height="4dp"
-            android:layout_marginBottom="12dp"
-            android:background="@color/primary" />
+            android:background="@color/primary"
+            android:layout_marginBottom="12dp" />
 
         <TextView
             android:id="@+id/tvTituloHomeRutas"
@@ -29,7 +29,6 @@
             android:layout_marginBottom="6dp" />
 
         <TextView
-            android:id="@+id/tvSubtituloHomeRutas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Seleccione la operación que desea realizar"
@@ -221,6 +220,7 @@
             android:orientation="horizontal"
             android:background="@color/surface"
             android:padding="18dp"
+            android:layout_marginBottom="14dp"
             android:elevation="2dp">
 
             <View
@@ -272,5 +272,123 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- CARD 5 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/surface"
+            android:padding="18dp"
+            android:layout_marginBottom="14dp"
+            android:elevation="2dp">
+
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:background="@color/primary_dark"
+                android:layout_marginEnd="16dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PASO 05"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Datos de usuario"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Registrar o consultar la información del usuario del recorrido."
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="12dp" />
+
+                <Button
+                    android:id="@+id/btnIrDatosUsuario"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="Datos de usuario"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/primary" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- CARD 6 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/surface"
+            android:padding="18dp"
+            android:elevation="2dp">
+
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:background="@color/primary_light"
+                android:layout_marginEnd="16dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PASO 06"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Blog de conductores"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Consulta publicaciones y novedades compartidas por conductores."
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="12dp" />
+
+                <Button
+                    android:id="@+id/btnIrBlogConductores"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:text="Blog de conductores"
+                    android:textAllCaps="false"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/primary" />
+            </LinearLayout>
+        </LinearLayout>
+
     </LinearLayout>
+
 </ScrollView>
